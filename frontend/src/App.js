@@ -1,5 +1,10 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Navigate, Routes } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Redirect,
+  Switch
+} from 'react-router-dom';
 
 import Users from './user/pages/Users';
 import NewContact from './contacts/pages/NewContact';
@@ -7,11 +12,15 @@ import NewContact from './contacts/pages/NewContact';
 const App = () => {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Users />} />
-        <Route path="/contacts/new" element={<NewContact />} exact />
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
+      <Switch>
+        <Route path="/" exact>
+          <Users />
+        </Route>
+        <Route path="/contacts/new" exact>
+          <NewContact />
+        </Route>
+        <Redirect to="/" />
+      </Switch>
     </Router>
   );
 };
