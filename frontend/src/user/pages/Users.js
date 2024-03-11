@@ -9,7 +9,7 @@ const Users = () => {
       id: 'u1',
       name: 'Sarath K',
       image:sarathImage,
-      places: 3
+      contacts: 3
     }
   ];
 
