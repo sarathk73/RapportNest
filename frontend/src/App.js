@@ -8,6 +8,7 @@ import {
 
 import Users from './user/pages/Users';
 import NewContact from './contacts/pages/NewContact';
+import UserContacts from './contacts/pages/UserContact';
 import MainNavigation from './shared/components/Navigation/MainNavigation';
 
 const App = () => {
@@ -18,6 +19,9 @@ const App = () => {
         <Switch>
           <Route path="/" exact>
             <Users />
+          </Route>
+          <Route path="/:userId/contacts" exact>
+            <UserContacts />
           </Route>
           <Route path="/contacts/new" exact>
             <NewContact />
