@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Card from '../../shared/components/UIElements/Card';
+import Button from '../../shared/components/FormElements/Button';
 import './ContactItem.css';
 
 const ContactItem = props => {
@@ -16,8 +17,8 @@ const ContactItem = props => {
           <p>{props.description}</p>
         </div>
         <div className="contact-item__actions">
-          <button>EDIT</button>
-          <button>DELETE</button>
+          <Button to={`/places/${props.id}`}>EDIT</Button>
+          <Button danger>DELETE</Button>
         </div>
       </Card>
     </li>

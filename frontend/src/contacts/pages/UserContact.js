@@ -8,9 +8,9 @@ const DUMMY_CONTACTS = [
   {
     id: 'p1',
     title: 'Sarath K',
-    description: 'Upcoming SDE !',
+    description: 'Upcoming Associate Engineer !',
     imageUrl: sarathImage,
-    address: '20 W 34th St, New York, NY 10001',
+    address: '20 W 34th St, Thirikkaderi, IN 679502',
     creator: 'u1'
   }
 ];
