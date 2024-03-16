@@ -1,9 +1,10 @@
 import React from 'react';
 
+import { useParams } from 'react-router-dom';
 import ContactList from '../components/ContactList';
 import sarathImage from '../../sarath.jpeg'; // This path should correctly point to src/sarath.jpeg
 
-const DUMMY_PLACES = [
+const DUMMY_CONTACTS = [
   {
     id: 'p1',
     title: 'Sarath K',
@@ -16,7 +17,9 @@ const DUMMY_PLACES = [
 
 const UserContacts = () => {
 
-  return <ContactList items={DUMMY_PLACES} />;
+  const userId = useParams().userId;
+  const loadedContacts = DUMMY_CONTACTS.filter(contact => contact.creator === userId);
+  return <ContactList items={loadedContacts} />;
 };
 
 export default UserContacts;
