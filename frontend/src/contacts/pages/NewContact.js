@@ -6,7 +6,7 @@ import './NewContact.css';
 const NewContact = () => {
   return (
     <form className="contact-form">
-      <Input element="input" type="text" label="Title" />
+      <Input element="input" type="text" label="Title"  validators={[]} errorText="Please enter a valid title." />
     </form>
   );
 };
