@@ -1,7 +1,13 @@
 import React from 'react';
 
+import './NewContact.css';
+
 const NewContact = () => {
-  return <h2>NewContact Works!</h2>
+  return (
+    <form className="contact-form">
+      <Input type="text" label="Title" />
+    </form>
+  );
 };
 
 export default NewContact;
