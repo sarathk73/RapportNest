@@ -67,7 +67,7 @@ const NewContact = () => {
         id="title"
         element="input"
         type="text"
-        label="Title"
+        label="Name"
         validators={[VALIDATOR_REQUIRE()]}
         errorText="Please enter a valid title."
         onInput={inputHandler}
@@ -81,11 +81,11 @@ const NewContact = () => {
         onInput={inputHandler}
       />
       <Input
-        id="address"
+        id="phone"
         element="input"
-        label="Address"
-        validators={[VALIDATOR_REQUIRE()]}
-        errorText="Please enter a valid address."
+        label="Phone Number"
+        validators={[VALIDATOR_MINLENGTH(10)]}
+        errorText="Please enter a valid phone number (at least 10)."
         onInput={inputHandler}
       />
       <Button type="submit" disabled={!formState.isValid}>

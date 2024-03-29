@@ -10,7 +10,7 @@ const DUMMY_CONTACTS = [
     title: 'Sarath K',
     description: 'Upcoming Associate Engineer !',
     imageUrl: sarathImage,
-    address: '20 W 34th St, Thirikkaderi, IN 679502',
+    phone: '7306162306',
     creator: 'u1'
   }
 ];

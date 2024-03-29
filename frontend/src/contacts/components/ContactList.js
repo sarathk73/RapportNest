@@ -25,7 +25,7 @@ const ContactList = props => {
           image={contact.imageUrl}
           title={contact.title}
           description={contact.description}
-          address={contact.address}
+          phone={contact.phone}
           creatorId={contact.creator}
         />
       ))}
