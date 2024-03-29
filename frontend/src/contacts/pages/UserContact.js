@@ -18,7 +18,7 @@ const DUMMY_CONTACTS = [
     title: 'Akash  TK',
     description: 'Upcoming Software Engineer !',
     imageUrl: 'https://i.ibb.co/G3fDjLx/akash.png',
-    phone: '88911 01357',
+    phone: '8891101357',
     creator: 'u1'
   },
   {
@@ -26,7 +26,7 @@ const DUMMY_CONTACTS = [
     title: 'Duyoof MP',
     description: 'Upcoming Software Engineer !',
     imageUrl: 'https://i.ibb.co/Ht6xdwd/doop.png',
-    phone: '95620 22595',
+    phone: '9562022595',
     creator: 'u1'
   }
 
