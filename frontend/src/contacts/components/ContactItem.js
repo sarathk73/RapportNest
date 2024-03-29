@@ -17,7 +17,7 @@ const ContactItem = props => {
           <p>{props.description}</p>
         </div>
         <div className="contact-item__actions">
-          <Button to={`/places/${props.id}`}>EDIT</Button>
+          <Button to={`/contacts/${props.id}`}>EDIT</Button>
           <Button danger>DELETE</Button>
         </div>
       </Card>
