@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 //import sarathImage from '../../sarath.jpeg'; // This path should correctly point to src/sarath.jpeg
@@ -41,27 +41,50 @@ const DUMMY_CONTACTS = [
 
 
 const UpdateContact = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const contactId = useParams().contactId;
+
+  const [formState, inputHandler, setFormData] = useForm(
+    {
+      title: {
+        value: '',
+        isValid: false
+      },
+      description: {
+        value: '',
+        isValid: false
+      },
+      phone: {
+        value: '',
+        isValid: false
+      }
+    },
+    false
+  );
 
   const identifiedContact = DUMMY_CONTACTS.find(p => p.id === contactId);
 
-  const [formState, inputHandler] = useForm(
-    {
-      title: {
-        value: identifiedContact.title,
-        isValid: true
+
+  useEffect(() => {
+    setFormData(
+      {
+        title: {
+          value: identifiedContact.title,
+          isValid: true
+        },
+        description: {
+          value: identifiedContact.description,
+          isValid: true
+        },
+        phone: {
+          value: identifiedContact.phone,
+          isValid: true
+        }
       },
-      description: {
-        value: identifiedContact.description,
-        isValid: true
-      },
-      phone: {
-        value: identifiedContact.phone,
-        isValid: true
-      }
-    },
-    true
-  );
+      true
+    );
+    setIsLoading(false);
+  }, [setFormData, identifiedContact]);
 
   const contactUpdateSubmitHandler = event => {
     event.preventDefault();
@@ -72,6 +95,14 @@ const UpdateContact = () => {
     return (
       <div className="center">
         <h2>Could not find contact!</h2>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="center">
+        <h2>Loading...</h2>
       </div>
     );
   }
@@ -116,4 +147,4 @@ const UpdateContact = () => {
   );
 };
 
-export default UpdateContact;
+export default UpdateContact; 
