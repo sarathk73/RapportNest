@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 
 import Input from '../../shared/components/FormElements/Input';
 import Button from '../../shared/components/FormElements/Button';
+import Card from '../../shared/components/UIElements/Card';
 import {
   VALIDATOR_REQUIRE,
   VALIDATOR_MINLENGTH
@@ -66,23 +67,25 @@ const UpdateContact = () => {
 
 
   useEffect(() => {
-    setFormData(
-      {
-        title: {
-          value: identifiedContact.title,
-          isValid: true
+    if(identifiedContact){
+      setFormData(
+        {
+          title: {
+            value: identifiedContact.title,
+            isValid: true
+          },
+          description: {
+            value: identifiedContact.description,
+            isValid: true
+          },
+          phone: {
+            value: identifiedContact.phone,
+            isValid: true
+          }
         },
-        description: {
-          value: identifiedContact.description,
-          isValid: true
-        },
-        phone: {
-          value: identifiedContact.phone,
-          isValid: true
-        }
-      },
-      true
-    );
+        true
+      );
+    }
     setIsLoading(false);
   }, [setFormData, identifiedContact]);
 
@@ -94,7 +97,9 @@ const UpdateContact = () => {
   if (!identifiedContact) {
     return (
       <div className="center">
-        <h2>Could not find contact!</h2>
+        <Card>
+          <h2>Could not find contact!</h2>
+        </Card>
       </div>
     );
   }
