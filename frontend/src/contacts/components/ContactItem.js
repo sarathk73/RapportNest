@@ -1,11 +1,13 @@
-import React,{useState} from 'react';
+import React,{useState, useContext} from 'react';
 
 import Card from '../../shared/components/UIElements/Card';
 import Button from '../../shared/components/FormElements/Button';
 import Modal from '../../shared/components/UIElements/Modal';
+import { AuthContext } from '../../shared/context/auth-context';
 import './ContactItem.css';
 
 const ContactItem = props => {
+  const auth = useContext(AuthContext);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   
   const showDeleteWarningHandler = () => {
@@ -55,10 +57,14 @@ const ContactItem = props => {
             <p>{props.description}</p>
           </div>
           <div className="contact-item__actions">
+          {auth.isLoggedIn && (
             <Button to={`/contacts/${props.id}`}>EDIT</Button>
+          )}
+          {auth.isLoggedIn && (
             <Button danger onClick={showDeleteWarningHandler}>
               DELETE
             </Button>
+           )}
           </div>
         </Card>
       </li>
