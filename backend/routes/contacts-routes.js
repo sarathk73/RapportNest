@@ -21,4 +21,14 @@ router.get('/:pid', (req, res, next) => {
     res.json({contact}); // => { contact } => { contact: contact }
   });
 
+router.get('/user/:uid', (req, res, next) => {
+  const userId = req.params.uid;
+
+  const contact = DUMMY_CONTACTS.find(p => {
+    return p.creator === userId;
+  });
+
+  res.json({ contact });
+});
+
 module.exports = router;
