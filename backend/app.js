@@ -5,6 +5,8 @@ const contactsRoutes = require('./routes/contacts-routes');
 
 const app = express();
 
+app.use(bodyParser.json());
+
 app.use('/api/contacts', contactsRoutes); // => /api/contacts..
 
 app.use((error, req, res, next) => {
