@@ -1,3 +1,5 @@
+const { v4: uuidv4 } = require('uuid');
+
 const HttpError = require('../models/http-error');
 
 const DUMMY_CONTACTS = [
@@ -41,5 +43,21 @@ const getContactByUserId = (req, res, next) => {
     res.json({ contact });
   }
 
+  const createContact = (req, res, next) => {
+    const { title, description, phone, creator } = req.body;
+    const createdContact = {
+      id: uuidv4(),
+      title,
+      description,
+      phone,
+      creator
+    };
+  
+    DUMMY_CONTACTS.push(createdContact); 
+  
+    res.status(201).json({contact: createdContact});
+  };
+
 exports.getContactById = getContactById;
 exports.getContactByUserId = getContactByUserId; 
+exports.createContact = createContact;
