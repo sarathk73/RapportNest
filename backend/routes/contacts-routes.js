@@ -1,47 +1,11 @@
 const express = require('express');
 
-const HttpError = require('../models/http-error');
+const contactsControllers = require('../controllers/contacts-controllers');
 
 const router = express.Router();
 
-const DUMMY_CONTACTS = [
-    {
-      id: 'p1',
-      title: 'Sarath K',
-      description: 'Upcoming Associate Engineer !',
-      imageUrl: 'https://i.ibb.co/3yK7hXt/Whats-App-Image-2024-03-28-at-12-08-34-PM.jpg',
-      phone: '7306162306',
-      creator: 'u1'
-    }
-];
+router.get('/:pid', contactsControllers.getContactById );
 
-router.get('/:pid', (req, res, next) => {
-    const contactId = req.params.pid; // { pid: 'p1' }
-    const contact = DUMMY_CONTACTS.find(p => {
-      return p.id === contactId;
-    });
-
-    if (!contact) {
-    throw new HttpError('Could not find a contact for the provided id.', 404);
-    }
-
-    res.json({contact}); // => { contact } => { contact: contact }
-});
-
-router.get('/user/:uid', (req, res, next) => {
-  const userId = req.params.uid;
-
-  const contact = DUMMY_CONTACTS.find(p => {
-    return p.creator === userId;
-  });
-
-  if (!contact) {
-    return next(
-      new HttpError('Could not find a contact for the provided user id.', 404)
-    );
-  }
-
-  res.json({ contact });
-});
+router.get('/user/:uid', contactsControllers.getContactByUserId);
 
 module.exports = router;
