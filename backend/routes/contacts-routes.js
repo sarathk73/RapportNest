@@ -18,8 +18,15 @@ router.get('/:pid', (req, res, next) => {
     const contact = DUMMY_CONTACTS.find(p => {
       return p.id === contactId;
     });
-    res.json({contact}); // => { contact } => { contact: contact }
-  });
+
+    if (!contact) {
+    const error = new Error('Could not find a contact for the provided id.');
+    error.code = 404;
+    throw error;
+  }
+
+  res.json({contact}); // => { contact } => { contact: contact }
+});
 
 router.get('/user/:uid', (req, res, next) => {
   const userId = req.params.uid;
@@ -27,6 +34,12 @@ router.get('/user/:uid', (req, res, next) => {
   const contact = DUMMY_CONTACTS.find(p => {
     return p.creator === userId;
   });
+
+  if (!contact) {
+    const error = new Error('Could not find a contact for the provided user id.');
+    error.code = 404;
+    return next(error);
+  }
 
   res.json({ contact });
 });
