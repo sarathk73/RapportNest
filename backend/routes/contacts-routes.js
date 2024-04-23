@@ -10,4 +10,6 @@ router.get('/user/:uid', contactsControllers.getContactByUserId);
 
 router.post('/', contactsControllers.createContact);
 
+router.patch('/:pid', contactsControllers.updateContact);
+
 module.exports = router;

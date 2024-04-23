@@ -58,6 +58,22 @@ const getContactByUserId = (req, res, next) => {
     res.status(201).json({contact: createdContact});
   };
 
+  const updateContact = (req, res, next) => {
+    const { title, description, phone} = req.body;
+    const contactId = req.params.pid;
+  
+    const updatedContact = { ...DUMMY_CONTACTS.find(p => p.id === contactId) };
+    const contactIndex = DUMMY_CONTACTS.findIndex(p => p.id === contactId);
+    updatedContact.title = title;
+    updatedContact.description = description;
+    updatedContact.phone = phone;
+  
+    DUMMY_CONTACTS[contactIndex] = updatedContact;
+  
+    res.status(200).json({contact: updatedContact});
+  };
+
 exports.getContactById = getContactById;
 exports.getContactByUserId = getContactByUserId; 
 exports.createContact = createContact;
+exports.updateContact = updateContact;
