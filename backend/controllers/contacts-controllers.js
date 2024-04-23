@@ -2,7 +2,7 @@ const { v4: uuidv4 } = require('uuid');
 
 const HttpError = require('../models/http-error');
 
-const DUMMY_CONTACTS = [
+let DUMMY_CONTACTS = [
     {
       id: 'p1',
       title: 'Sarath K',
@@ -73,7 +73,14 @@ const getContactByUserId = (req, res, next) => {
     res.status(200).json({contact: updatedContact});
   };
 
+  const deleteContact = (req, res, next) => {
+    const contactId = req.params.pid;
+    DUMMY_CONTACTS = DUMMY_CONTACTS.filter(p => p.id !== contactId);
+    res.status(200).json({ message: 'Deleted contact.' });
+  };
+
 exports.getContactById = getContactById;
 exports.getContactByUserId = getContactByUserId; 
 exports.createContact = createContact;
 exports.updateContact = updateContact;
+exports.deleteContact = deleteContact;

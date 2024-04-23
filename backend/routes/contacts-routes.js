@@ -12,4 +12,6 @@ router.post('/', contactsControllers.createContact);
 
 router.patch('/:pid', contactsControllers.updateContact);
 
+router.delete('/:pid', contactsControllers.deleteContact);
+
 module.exports = router;
