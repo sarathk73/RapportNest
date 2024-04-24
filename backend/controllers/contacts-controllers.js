@@ -1,5 +1,7 @@
 const { v4: uuidv4 } = require('uuid');
 
+const { validationResult } = require('express-validator');
+
 const HttpError = require('../models/http-error');
 
 let DUMMY_CONTACTS = [
@@ -44,6 +46,12 @@ const getContactsByUserId = (req, res, next) => {
   }
 
   const createContact = (req, res, next) => {
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      throw new HttpError('Invalid inputs passed, please check your data.', 422);
+    }
+
     const { title, description, phone, creator } = req.body;
     const createdContact = {
       id: uuidv4(),
