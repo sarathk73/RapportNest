@@ -46,7 +46,6 @@ const getContactsByUserId = (req, res, next) => {
   }
 
   const createContact = (req, res, next) => {
-
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       throw new HttpError('Invalid inputs passed, please check your data.', 422);
@@ -67,6 +66,10 @@ const getContactsByUserId = (req, res, next) => {
   };
 
   const updateContact = (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      throw new HttpError('Invalid inputs passed, please check your data.', 422);
+    }
     const { title, description, phone} = req.body;
     const contactId = req.params.pid;
   

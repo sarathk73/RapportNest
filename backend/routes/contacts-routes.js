@@ -23,7 +23,18 @@ router.post('/',
     contactsControllers.createContact
 );
 
-router.patch('/:pid', contactsControllers.updateContact);
+router.patch('/:pid',
+    [
+      check('title')
+        .not()
+        .isEmpty(),
+      check('description').isLength({ min: 5 }),
+      check('phone')
+      .not()
+      .isEmpty()
+    ],
+    contactsControllers.updateContact
+);
 
 router.delete('/:pid', contactsControllers.deleteContact);
 
