@@ -86,6 +86,9 @@ const getContactsByUserId = (req, res, next) => {
 
   const deleteContact = (req, res, next) => {
     const contactId = req.params.pid;
+    if (!DUMMY_CONTACTS.find(p => p.id === contactId)) {
+      throw new HttpError('Could not find a Contact for that id.', 404);
+    }
     DUMMY_CONTACTS = DUMMY_CONTACTS.filter(p => p.id !== contactId);
     res.status(200).json({ message: 'Deleted contact.' });
   };
