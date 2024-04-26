@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const { validationResult } = require('express-validator');
 
 const HttpError = require('../models/http-error');
+const Contact = require('../models/contact');
 
 let DUMMY_CONTACTS = [
     {
@@ -45,24 +46,35 @@ const getContactsByUserId = (req, res, next) => {
     res.json({ contacts });
   }
 
-  const createContact = (req, res, next) => {
+  const createContact = async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      throw new HttpError('Invalid inputs passed, please check your data.', 422);
+      return next(
+        new HttpError('Invalid inputs passed, please check your data.', 422)
+      );
     }
-
+  
     const { title, description, phone, creator } = req.body;
-    const createdContact = {
-      id: uuidv4(),
+  
+    const createdContact = new Contact({
       title,
       description,
       phone,
+      image: 'https://i.ibb.co/3yK7hXt/Whats-App-Image-2024-03-28-at-12-08-34-PM.jpg',
       creator
-    };
+    });
   
-    DUMMY_CONTACTS.push(createdContact); 
-  
-    res.status(201).json({contact: createdContact});
+    try {
+      await createdContact.save();
+    } catch (err) {
+      const error = new HttpError(
+        'Creating contact failed, please try again.',
+        500
+      );
+      return next(error);
+    }
+    
+    res.status(201).json({ contact: createdContact });
   };
 
   const updateContact = (req, res, next) => {
@@ -73,6 +85,7 @@ const getContactsByUserId = (req, res, next) => {
     const { title, description, phone} = req.body;
     const contactId = req.params.pid;
   
+    
     const updatedContact = { ...DUMMY_CONTACTS.find(p => p.id === contactId) };
     const contactIndex = DUMMY_CONTACTS.findIndex(p => p.id === contactId);
     updatedContact.title = title;
