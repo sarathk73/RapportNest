@@ -43,21 +43,28 @@ const getContactById = async (req, res, next) => {
 };
 
 
-const getContactsByUserId = (req, res, next) => {
-    const userId = req.params.uid;
-  
-    const contacts = DUMMY_CONTACTS.filter(p => {
-      return p.creator === userId;
-    });
-  
-    if (!contacts || contacts.length === 0) {
-      return next(
-        new HttpError('Could not find a contacts for the provided user id.', 404)
-      );
-    }
-  
-    res.json({ contacts });
+const getContactsByUserId = async (req, res, next) => {
+  const userId = req.params.uid;
+
+  let contacts;
+  try {
+    contacts = await Contact.find({ creator: userId });
+  } catch (err) {
+    const error = new HttpError(
+      'Fetching Contacts failed, please try again later',
+      500
+    );
+    return next(error);
   }
+
+  if (!contacts || contacts.length === 0) {
+    return next(
+      new HttpError('Could not find contacts for the provided user id.', 404)
+    );
+  }
+
+  res.json({ contacts: contacts.map(contact => contact.toObject({ getters: true })) });
+};
 
   const createContact = async (req, res, next) => {
     const errors = validationResult(req);
