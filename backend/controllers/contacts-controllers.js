@@ -97,25 +97,45 @@ const getContactsByUserId = async (req, res, next) => {
     res.status(201).json({ contact: createdContact });
   };
 
-  const updateContact = (req, res, next) => {
+  const updateContact = async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      throw new HttpError('Invalid inputs passed, please check your data.', 422);
+      return next(
+        new HttpError('Invalid inputs passed, please check your data.', 422)
+      );
     }
-    const { title, description, phone} = req.body;
+  
+    const { title, description,phone} = req.body;
     const contactId = req.params.pid;
   
-    
-    const updatedContact = { ...DUMMY_CONTACTS.find(p => p.id === contactId) };
-    const contactIndex = DUMMY_CONTACTS.findIndex(p => p.id === contactId);
-    updatedContact.title = title;
-    updatedContact.description = description;
-    updatedContact.phone = phone;
+    let contact;
+    try {
+      contact = await Contact.findById(contactId);
+    } catch (err) {
+      const error = new HttpError(
+        'Something went wrong, could not update contact.',
+        500
+      );
+      return next(error);
+    }
   
-    DUMMY_CONTACTS[contactIndex] = updatedContact;
+    contact.title = title;
+    contact.description = description;
+    contact.phone = phone;
   
-    res.status(200).json({contact: updatedContact});
+    try {
+      await contact.save();
+    } catch (err) {
+      const error = new HttpError(
+        'Something went wrong, could not update contact.',
+        500
+      );
+      return next(error);
+    }
+  
+    res.status(200).json({ contact: contact.toObject({ getters: true }) });
   };
+  
 
   const deleteContact = (req, res, next) => {
     const contactId = req.params.pid;
