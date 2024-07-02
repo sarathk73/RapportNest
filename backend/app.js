@@ -10,7 +10,7 @@ const app = express();
 
 app.use(bodyParser.json());
 
-app.use('/api/contacts', contactsRoutes); // => /api/contacts..
+app.use('/api/contacts', contactsRoutes); 
 app.use('/api/users', usersRoutes);
 
 app.use((req, res, next) => {
