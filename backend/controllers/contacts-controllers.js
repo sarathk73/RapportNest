@@ -139,24 +139,40 @@ const getContactsByUserId = async (req, res, next) => {
 
   const deleteContact = async (req, res, next) => {
     const contactId = req.params.pid;
-
+  
+    let contact;
     try {
-      const contact = await Contact.findByIdAndDelete(contactId);
-      
-      if (!contact) {
-        return next(new HttpError('Could not find a contact for that id.', 404));
-      }
-      
-      res.status(200).json({ message: 'Deleted contact.' });
+      contact = await Contact.findById(contactId).populate('creator');
     } catch (err) {
-      console.error(err); 
+      const error = new HttpError(
+        'Something went wrong, could not delete place.',
+        500
+      );
+      return next(error);
+    }
+  
+    if (!contact) {
+      const error = new HttpError('Could not find contact for this id.', 404);
+      return next(error);
+    }
+  
+    try {
+      const sess = await mongoose.startSession();
+      sess.startTransaction();
+      await contact.remove({ session: sess });
+      contact.creator.contacts.pull(contact);
+      await contact.creator.save({ session: sess });
+      await sess.commitTransaction();
+    } catch (err) {
       const error = new HttpError(
         'Something went wrong, could not delete contact.',
         500
       );
       return next(error);
     }
- };
+  
+    res.status(200).json({ message: 'Deleted contact.' });
+  };
 exports.getContactById = getContactById;
 exports.getContactsByUserId = getContactsByUserId; 
 exports.createContact = createContact;
