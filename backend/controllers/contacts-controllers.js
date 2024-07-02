@@ -1,20 +1,10 @@
 const { v4: uuidv4 } = require('uuid');
-
 const { validationResult } = require('express-validator');
+const mongoose = require('mongoose');
 
 const HttpError = require('../models/http-error');
 const Contact = require('../models/contact');
-
-let DUMMY_CONTACTS = [
-    {
-      id: 'p1',
-      title: 'Sarath K',
-      description: 'Upcoming Associate Engineer !',
-      imageUrl: 'https://i.ibb.co/3yK7hXt/Whats-App-Image-2024-03-28-at-12-08-34-PM.jpg',
-      phone: '7306162306',
-      creator: 'u1'
-    }
-];
+const User = require('../models/user');
 
 
 const getContactById = async (req, res, next) => {
@@ -58,6 +48,7 @@ const getContactsByUserId = async (req, res, next) => {
     return next(error);
   }
 
+  // if (!contacts || contacts.length === 0) {
   if (!userWithContacts || userWithContacts.contacts.length === 0) {
     return next(
       new HttpError('Could not find contacts for the provided user id.', 404)
@@ -85,8 +76,28 @@ const getContactsByUserId = async (req, res, next) => {
       creator
     });
   
+    let user;
     try {
-      await createdContact.save();
+      user = await User.findById(creator);
+    } catch (err) {
+      const error = new HttpError('Creating contact failed, please try again', 500);
+      return next(error);
+    }
+  
+    if (!user) {
+      const error = new HttpError('Could not find user for provided id', 404);
+      return next(error);
+    }
+  
+    console.log(user);
+  
+    try {
+      const sess = await mongoose.startSession();
+      sess.startTransaction();
+      await createdContact.save({ session: sess });
+      user.contacts.push(createdContact);
+      await user.save({ session: sess });
+      await sess.commitTransaction();
     } catch (err) {
       const error = new HttpError(
         'Creating contact failed, please try again.',
@@ -94,7 +105,7 @@ const getContactsByUserId = async (req, res, next) => {
       );
       return next(error);
     }
-    
+  
     res.status(201).json({ contact: createdContact });
   };
 
