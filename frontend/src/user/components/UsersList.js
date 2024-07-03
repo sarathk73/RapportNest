@@ -20,7 +20,7 @@ const UsersList = props => {
           id={user.id}
           image={user.image}
           name={user.name}
-          contactCount={user.contacts}
+          contactCount={user.contacts.length}
         />
       ))}
     </ul>
