@@ -24,6 +24,12 @@ const UserContacts = () => {
     };
     fetchContacts();
   }, [sendRequest, userId]);
+
+  const contactDeletedHandler = deletedContactId => {
+    setLoadedContacts(prevContacts =>
+      prevContacts.filter(contact => contact.id !== deletedContactId)
+    );
+  };
   
   return (
     <React.Fragment>
@@ -33,7 +39,9 @@ const UserContacts = () => {
           <LoadingSpinner />
         </div>
       )}
-      {!isLoading && loadedContacts && <ContactList items={loadedContacts} />}
+      {!isLoading && loadedContacts && (
+        <ContactList items={loadedContacts} onDeleteContact={contactDeletedHandler} />
+      )}
     </React.Fragment>
   );
 };

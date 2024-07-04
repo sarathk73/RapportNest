@@ -28,6 +28,7 @@ const ContactList = props => {
           description={contact.description}
           phone={contact.phone}
           creatorId={contact.creator}
+          onDelete={props.onDeleteContact}
         />
       ))}
     </ul>
