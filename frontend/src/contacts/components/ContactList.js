@@ -23,7 +23,7 @@ const ContactList = props => {
         <ContactItem
           key={contact.id}
           id={contact.id}
-          image={contact.imageUrl}
+          image={contact.image}
           title={contact.title}
           description={contact.description}
           phone={contact.phone}

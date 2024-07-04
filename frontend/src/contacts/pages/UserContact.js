@@ -1,42 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useParams } from 'react-router-dom';
 import ContactList from '../components/ContactList';
-//import sarathImage from '../../sarath.jpeg'; // This path should correctly point to src/sarath.jpeg
+import ErrorModal from '../../shared/components/UIElements/ErrorModal';
+import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
+import { useHttpClient } from '../../shared/hooks/http-hook';
 
-const DUMMY_CONTACTS = [
-  {
-    id: 'p1',
-    title: 'Sarath K',
-    description: 'Upcoming Associate Engineer !',
-    imageUrl: 'https://i.ibb.co/dQ8HFSr/sarath.jpg',
-    phone: '7306162306',
-    creator: 'u1'
-  },
-  {
-    id: 'p2',
-    title: 'Akash  TK',
-    description: 'Upcoming Software Engineer !',
-    imageUrl: 'https://i.ibb.co/G3fDjLx/akash.png',
-    phone: '8891101357',
-    creator: 'u1'
-  },
-  {
-    id: 'p3',
-    title: 'Duyoof MP',
-    description: 'Upcoming Software Engineer !',
-    imageUrl: 'https://i.ibb.co/Ht6xdwd/doop.png',
-    phone: '9562022595',
-    creator: 'u1'
-  }
-
-];
 
 const UserContacts = () => {
+  const [loadedContacts, setLoadedContacts] = useState();
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
   const userId = useParams().userId;
-  const loadedContacts = DUMMY_CONTACTS.filter(contact => contact.creator === userId);
-  return <ContactList items={loadedContacts} />;
+
+  useEffect(() => {
+    const fetchContacts = async () => {
+      try {
+        const responseData = await sendRequest(
+          `http://localhost:5000/api/contacts/user/${userId}`
+        );
+        setLoadedContacts(responseData.contacts);
+      } catch (err) {}
+    };
+    fetchContacts();
+  }, [sendRequest, userId]);
+  
+  return (
+    <React.Fragment>
+      <ErrorModal error={error} onClear={clearError} />
+      {isLoading && (
+        <div className="center">
+          <LoadingSpinner />
+        </div>
+      )}
+      {!isLoading && loadedContacts && <ContactList items={loadedContacts} />}
+    </React.Fragment>
+  );
 };
 
 export default UserContacts;
