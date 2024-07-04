@@ -69,11 +69,11 @@ const ContactItem = props => {
             <p>{props.description}</p>
           </div>
           <div className="contact-item__actions">
-            {auth.isLoggedIn && (
+            {auth.userId === props.creatorId && (
               <Button to={`/contacts/${props.id}`}>EDIT</Button>
             )}
 
-            {auth.isLoggedIn && (
+            {auth.userId === props.creatorId && (
               <Button danger onClick={showDeleteWarningHandler}>
                 DELETE
               </Button>
