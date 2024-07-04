@@ -30,6 +30,7 @@ app.use((req, res, next) => {
 });
 
 app.use((error, req, res, next) => {
+    console.error(error); // Log the error for debugging
     if (res.headerSent) {
       return next(error);
     }

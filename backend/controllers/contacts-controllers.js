@@ -41,6 +41,7 @@ const getContactsByUserId = async (req, res, next) => {
   try {
     userWithContacts = await User.findById(userId).populate('contacts');
   } catch (err) {
+    console.error(`Error fetching contacts for user ${userId}: `, err); // Improved error logging
     const error = new HttpError(
       'Fetching Contacts failed, please try again later',
       500
