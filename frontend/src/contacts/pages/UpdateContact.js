@@ -1,49 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-
-//import sarathImage from '../../sarath.jpeg'; // This path should correctly point to src/sarath.jpeg
+import React, { useEffect, useState, useContext } from 'react';
+import { useParams, useHistory } from 'react-router-dom';
 
 import Input from '../../shared/components/FormElements/Input';
 import Button from '../../shared/components/FormElements/Button';
 import Card from '../../shared/components/UIElements/Card';
+import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
+import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import {
   VALIDATOR_REQUIRE,
   VALIDATOR_MINLENGTH
 } from '../../shared/util/validators';
 import { useForm } from '../../shared/hooks/form-hook';
+import { useHttpClient } from '../../shared/hooks/http-hook';
+import { AuthContext } from '../../shared/context/auth-context';
 import './NewContact.css';
 
-const DUMMY_CONTACTS = [
-    {
-      id: 'p1',
-      title: 'Sarath K',
-      description: 'Upcoming Associate Engineer !',
-      imageUrl: 'https://i.ibb.co/3yK7hXt/Whats-App-Image-2024-03-28-at-12-08-34-PM.jpg',
-      phone: '7306162306',
-      creator: 'u1'
-    },
-    {
-      id: 'p2',
-      title: 'Akash  TK',
-      description: 'Upcoming Software Engineer !',
-      imageUrl: 'https://i.ibb.co/G3fDjLx/akash.png',
-      phone: '8891101357',
-      creator: 'u1'
-    },
-    {
-      id: 'p3',
-      title: 'Duyoof MP',
-      description: 'Upcoming Software Engineer !',
-      imageUrl: 'https://i.ibb.co/Ht6xdwd/doop.png',
-      phone: '9562022595',
-      creator: 'u1'
-    }
-  ];
-
-
 const UpdateContact = () => {
-  const [isLoading, setIsLoading] = useState(true);
+  const auth = useContext(AuthContext);
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const [loadedContact, setLoadedContact] = useState();
   const contactId = useParams().contactId;
+  const history = useHistory();
 
   const [formState, inputHandler, setFormData] = useForm(
     {
@@ -63,38 +40,64 @@ const UpdateContact = () => {
     false
   );
 
-  const identifiedContact = DUMMY_CONTACTS.find(p => p.id === contactId);
-
-
   useEffect(() => {
-    if(identifiedContact){
-      setFormData(
-        {
-          title: {
-            value: identifiedContact.title,
-            isValid: true
+    const fetchContact = async () => {
+      try {
+        const responseData = await sendRequest(
+          `http://localhost:5000/api/contacts/${contactId}`
+        );
+        setLoadedContact(responseData.contact);
+        setFormData(
+          {
+            title: {
+              value: responseData.contact.title,
+              isValid: true
+            },
+            description: {
+              value: responseData.contact.description,
+              isValid: true
+            },
+            phone: {
+              value: responseData.contact.phone,
+              isValid: true
+            }
           },
-          description: {
-            value: identifiedContact.description,
-            isValid: true
-          },
-          phone: {
-            value: identifiedContact.phone,
-            isValid: true
-          }
-        },
-        true
-      );
-    }
-    setIsLoading(false);
-  }, [setFormData, identifiedContact]);
+          true
+        );
 
-  const contactUpdateSubmitHandler = event => {
+      } catch (err) {}
+    };
+    fetchContact();
+  }, [sendRequest, contactId, setFormData]);
+
+  const contactUpdateSubmitHandler = async event => {
     event.preventDefault();
-    console.log(formState.inputs);
+    try {
+      await sendRequest(
+        `http://localhost:5000/api/contacts/${contactId}`,
+        'PATCH',
+        JSON.stringify({
+          title: formState.inputs.title.value,
+          description: formState.inputs.description.value,
+          phone: formState.inputs.phone.value
+        }),
+        {
+          'Content-Type': 'application/json'
+        }
+      );
+      history.push('/' + auth.userId + '/contacts');
+    } catch (err) {}
   };
 
-  if (!identifiedContact) {
+  if (isLoading) {
+    return (
+      <div className="center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  if (!loadedContact && !error) {
     return (
       <div className="center">
         <Card>
@@ -104,52 +107,50 @@ const UpdateContact = () => {
     );
   }
 
-  if (isLoading) {
-    return (
-      <div className="center">
-        <h2>Loading...</h2>
-      </div>
-    );
-  }
-
   return (
-    <form className="contact-form" onSubmit={contactUpdateSubmitHandler}>
-      <Input
-        id="title"
-        element="input"
-        type="text"
-        label="Name"
-        validators={[VALIDATOR_REQUIRE()]}
-        errorText="Please enter a valid name."
-        onInput={inputHandler}
-        initialValue={formState.inputs.title.value}
-        initialValid={formState.inputs.title.isValid}
-      />
-      <Input
-        id="description"
-        element="textarea"
-        label="Description"
-        validators={[VALIDATOR_MINLENGTH(5)]}
-        errorText="Please enter a valid description (min. 5 characters)."
-        onInput={inputHandler}
-        initialValue={formState.inputs.description.value}
-        initialValid={formState.inputs.description.isValid}
-      />
-      <Input
-        id="phone"
-        element="input"
-        label="Phone Number"
-        validators={[VALIDATOR_MINLENGTH(10)]}
-        errorText="Please enter a valid Number."
-        onInput={inputHandler}
-        initialValue={formState.inputs.phone.value}
-        initialValid={formState.inputs.phone.isValid}
-      />
-      <Button type="submit" disabled={!formState.isValid}>
-        UPDATE CONTACT
-      </Button>
-    </form>
+    <React.Fragment>
+      <ErrorModal error={error} onClear={clearError} />
+      {!isLoading && loadedContact && (
+        <form className="contact-form" onSubmit={contactUpdateSubmitHandler}>
+          <Input
+            id="title"
+            element="input"
+            type="text"
+            label="Title"
+            validators={[VALIDATOR_REQUIRE()]}
+            errorText="Please enter a valid name."
+            onInput={inputHandler}
+            initialValue={loadedContact.title}
+            initialValid={true}
+          />
+          <Input
+            id="description"
+            element="textarea"
+            label="Description"
+            validators={[VALIDATOR_MINLENGTH(5)]}
+            errorText="Please enter a valid description (min. 5 characters)."
+            onInput={inputHandler}
+            initialValue={loadedContact.description}
+            initialValid={true}
+          />
+          <Input
+            id="phone"
+            element="input"
+            type="text"
+            label="Phone"
+            validators={[VALIDATOR_MINLENGTH(10)]}
+            errorText="Please enter a valid Phone Number."
+            onInput={inputHandler}
+            initialValue={loadedContact.phone}
+            initialValid={true}
+          />
+          <Button type="submit" disabled={!formState.isValid}>
+            UPDATE CONTACT
+          </Button>
+        </form>
+      )}
+    </React.Fragment>
   );
 };
 
-export default UpdateContact; 
+export default UpdateContact;
