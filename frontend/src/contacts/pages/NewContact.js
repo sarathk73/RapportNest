@@ -50,7 +50,6 @@ const NewContact = () => {
       formData.append('title', formState.inputs.title.value);
       formData.append('description', formState.inputs.description.value);
       formData.append('phone', formState.inputs.phone.value);
-      formData.append('creator', auth.userId);
       formData.append('image', formState.inputs.image.value);
       await sendRequest('http://localhost:5000/api/contacts', 'POST', formData, {
         Authorization: 'Bearer ' + auth.token

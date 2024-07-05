@@ -68,19 +68,19 @@ const getContactsByUserId = async (req, res, next) => {
       );
     }
   
-    const { title, description, phone, creator } = req.body;
+    const { title, description, phone,} = req.body;
   
     const createdContact = new Contact({
       title,
       description,
       phone,
       image:req.file.path,
-      creator
+      creator:req.userData.userId
     });
   
     let user;
     try {
-      user = await User.findById(creator);
+      user = await User.findById(req.userData.userId);
     } catch (err) {
       const error = new HttpError('Creating contact failed, please try again', 500);
       return next(error);
