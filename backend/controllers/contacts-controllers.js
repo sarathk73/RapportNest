@@ -132,6 +132,14 @@ const getContactsByUserId = async (req, res, next) => {
       );
       return next(error);
     }
+
+    if (contact.creator.toString() !== req.userData.userId) {
+      const error = new HttpError(
+        'You are not allowed to edit this contact.',
+        401
+      );
+      return next(error);
+    }
   
     contact.title = title;
     contact.description = description;
@@ -164,6 +172,14 @@ const getContactsByUserId = async (req, res, next) => {
     } catch (err) {
       console.error(`Error fetching contact with ID ${contactId}: `, err); 
       const error = new HttpError('Something went wrong, could not delete contact.', 500);
+      return next(error);
+    }
+
+    if (contact.creator.id !== req.userData.userId) {
+      const error = new HttpError(
+        'You are not allowed to delete this contact.',
+        401
+      );
       return next(error);
     }
 
