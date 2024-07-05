@@ -3,6 +3,7 @@ const express = require('express');
 const { check } = require('express-validator');
 
 const contactsControllers = require('../controllers/contacts-controllers');
+const fileUpload = require('../middleware/file-upload');
 
 const router = express.Router();
 
@@ -10,7 +11,9 @@ router.get('/:pid', contactsControllers.getContactById );
 
 router.get('/user/:uid', contactsControllers.getContactsByUserId);
 
-router.post('/',
+router.post(
+  '/',
+  fileUpload.single('image'),
     [
     check('title')
       .not()

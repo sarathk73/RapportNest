@@ -73,7 +73,7 @@ const getContactsByUserId = async (req, res, next) => {
       title,
       description,
       phone,
-      image: 'https://i.ibb.co/3yK7hXt/Whats-App-Image-2024-03-28-at-12-08-34-PM.jpg',
+      image:req.file.path,
       creator
     });
   
