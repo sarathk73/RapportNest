@@ -52,7 +52,9 @@ const NewContact = () => {
       formData.append('phone', formState.inputs.phone.value);
       formData.append('creator', auth.userId);
       formData.append('image', formState.inputs.image.value);
-      await sendRequest('http://localhost:5000/api/contacts', 'POST', formData);
+      await sendRequest('http://localhost:5000/api/contacts', 'POST', formData, {
+        Authorization: 'Bearer ' + auth.token
+      });
       history.push('/');
     } catch (err) {}
   };
