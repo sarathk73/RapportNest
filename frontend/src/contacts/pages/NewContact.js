@@ -6,6 +6,7 @@ import Input from '../../shared/components/FormElements/Input';
 import Button from '../../shared/components/FormElements/Button';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
+import ImageUpload from '../../shared/components/FormElements/ImageUpload';
 import {
   VALIDATOR_REQUIRE,
   VALIDATOR_MINLENGTH
@@ -31,6 +32,10 @@ const NewContact = () => {
       phone: {
         value: '',
         isValid: false
+      },
+      image: {
+        value: null,
+        isValid: false
       }
     },
     false
@@ -41,17 +46,13 @@ const NewContact = () => {
   const contactSubmitHandler = async event => {
     event.preventDefault();
     try {
-      await sendRequest(
-        'http://localhost:5000/api/contacts',
-        'POST',
-        JSON.stringify({
-          title: formState.inputs.title.value,
-          description: formState.inputs.description.value,
-          phone: formState.inputs.phone.value,
-          creator: auth.userId
-        }),
-        { 'Content-Type': 'application/json' }
-      );
+      const formData = new FormData();
+      formData.append('title', formState.inputs.title.value);
+      formData.append('description', formState.inputs.description.value);
+      formData.append('phone', formState.inputs.phone.value);
+      formData.append('creator', auth.userId);
+      formData.append('image', formState.inputs.image.value);
+      await sendRequest('http://localhost:5000/api/contacts', 'POST', formData);
       history.push('/');
     } catch (err) {}
   };
@@ -85,6 +86,11 @@ const NewContact = () => {
           validators={[VALIDATOR_MINLENGTH(10)]}
           errorText="Please enter a valid Phone Number."
           onInput={inputHandler}
+        />
+        <ImageUpload
+          id="image"
+          onInput={inputHandler}
+          errorText="Please provide an image."
         />
         <Button type="submit" disabled={!formState.isValid}>
           ADD CONTACT
