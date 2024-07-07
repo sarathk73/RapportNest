@@ -19,7 +19,8 @@ const UsersList = props => {
           key={user.id}
           id={user.id}
           image={user.image}
-          name={user.name}
+          firstName={user.firstName}
+          lastName={user.lastName}
           contactCount={user.contacts.length}
         />
       ))}
