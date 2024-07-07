@@ -22,12 +22,15 @@ const getUsers = async (req, res, next) => {
 const signup = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    console.log(errors.array());  
     return next(
       new HttpError('Invalid inputs passed, please check your data.', 422)
     );
   }
 
-  const { name, email, password } = req.body;
+  console.log(req.body); 
+
+  const { firstName, lastName, email, password, dateOfBirth, gender, phoneNumbers, address } = req.body;
 
   let existingUser;
   try {
@@ -60,11 +63,16 @@ const signup = async (req, res, next) => {
   }
 
   const createdUser = new User({
-    name,
+    firstName,
+    lastName,
     email,
-    image: req.file.path,
     password: hashedPassword,
-    places: []
+    dateOfBirth,
+    gender,
+    phoneNumbers,
+    address,
+    image: req.file.path,
+    contacts: []
   });
 
   try {
@@ -92,10 +100,9 @@ const signup = async (req, res, next) => {
     return next(error);
   }
 
-  res
-    .status(201)
-    .json({ userId: createdUser.id, email: createdUser.email, token: token });
+  res.status(201).json({ userId: createdUser.id, email: createdUser.email, token: token });
 };
+
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
