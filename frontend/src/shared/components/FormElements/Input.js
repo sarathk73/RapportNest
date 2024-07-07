@@ -60,6 +60,15 @@ const Input = props => {
         onBlur={touchHandler}
         value={inputState.value}
       />
+    ) : props.element === 'select' ? (
+      <select
+        id={props.id}
+        onChange={changeHandler}
+        onBlur={touchHandler}
+        value={inputState.value}
+      >
+        {props.children}
+      </select>
     ) : (
       <textarea
         id={props.id}
