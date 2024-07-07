@@ -9,7 +9,8 @@ import ImageUpload from '../../shared/components/FormElements/ImageUpload';
 import {
   VALIDATOR_EMAIL,
   VALIDATOR_MINLENGTH,
-  VALIDATOR_REQUIRE
+  VALIDATOR_REQUIRE,
+  VALIDATOR_PHONE
 } from '../../shared/util/validators';
 import { useForm } from '../../shared/hooks/form-hook';
 import { useHttpClient } from '../../shared/hooks/http-hook';
@@ -40,8 +41,13 @@ const Auth = () => {
       setFormData(
         {
           ...formState.inputs,
-          name: undefined,
-          image: undefined
+          firstName: undefined,
+          lastName: undefined,
+          image: undefined,
+          dateOfBirth: undefined,
+          gender: undefined,
+          phoneNumbers: undefined,
+          address: undefined,
         },
         formState.inputs.email.isValid && formState.inputs.password.isValid
       );
@@ -49,12 +55,32 @@ const Auth = () => {
       setFormData(
         {
           ...formState.inputs,
-          name: {
+          firstName: {
+            value: '',
+            isValid: false
+          },
+          lastName: {
             value: '',
             isValid: false
           },
           image: {
             value: null,
+            isValid: false
+          },
+          dateOfBirth: {
+            value: '',
+            isValid: false
+          },
+          gender: {
+            value: '',
+            isValid: false
+          },
+          phoneNumbers: {
+            value: '',
+            isValid: false
+          },
+          address: {
+            value: '',
             isValid: false
           }
         },
@@ -81,14 +107,22 @@ const Auth = () => {
           }
         );
         auth.login(responseData.userId, responseData.token);
-      } catch (err) {}
+      } catch (err) {
+        // Handle error
+      }
     } else {
       try {
         const formData = new FormData();
         formData.append('email', formState.inputs.email.value);
-        formData.append('name', formState.inputs.name.value);
         formData.append('password', formState.inputs.password.value);
+        formData.append('firstName', formState.inputs.firstName.value);
+        formData.append('lastName', formState.inputs.lastName.value);
         formData.append('image', formState.inputs.image.value);
+        formData.append('dateOfBirth', formState.inputs.dateOfBirth.value);
+        formData.append('gender', formState.inputs.gender.value);
+        formData.append('phoneNumbers', JSON.stringify([formState.inputs.phoneNumbers.value])); // Send as JSON array
+        formData.append('address', formState.inputs.address.value);
+
         const responseData = await sendRequest(
           'http://localhost:5000/api/users/signup',
           'POST',
@@ -105,27 +139,75 @@ const Auth = () => {
       <ErrorModal error={error} onClear={clearError} />
       <Card className="authentication">
         {isLoading && <LoadingSpinner asOverlay />}
-        <h2>Login Required</h2>
+        <h2>{isLoginMode ? 'Login Required' : 'Signup Required'}</h2>
         <hr />
         <form onSubmit={authSubmitHandler}>
           {!isLoginMode && (
-            <Input
-              element="input"
-              id="name"
-              type="text"
-              label="Your Name"
-              validators={[VALIDATOR_REQUIRE()]}
-              errorText="Please enter a name."
-              onInput={inputHandler}
-            />
-          )}
-          {!isLoginMode && (
-            <ImageUpload
-              center
-              id="image"
-              onInput={inputHandler}
-              errorText="Please provide an image."
-            />
+            <>
+              <Input
+                element="input"
+                id="firstName"
+                type="text"
+                label="First Name"
+                validators={[VALIDATOR_REQUIRE()]}
+                errorText="Please enter your first name."
+                onInput={inputHandler}
+              />
+              <Input
+                element="input"
+                id="lastName"
+                type="text"
+                label="Last Name"
+                validators={[VALIDATOR_REQUIRE()]}
+                errorText="Please enter your last name."
+                onInput={inputHandler}
+              />
+              <Input
+                element="input"
+                id="dateOfBirth"
+                type="date"
+                label="Date of Birth"
+                validators={[VALIDATOR_REQUIRE()]}
+                errorText="Please enter a valid date of birth."
+                onInput={inputHandler}
+              />
+              <Input
+                element="select"
+                id="gender"
+                label="Gender"
+                validators={[VALIDATOR_REQUIRE()]}
+                errorText="Please select your gender."
+                onInput={inputHandler}
+              >
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </Input>
+              <Input
+                element="input"
+                id="phoneNumbers"
+                type="text"
+                label="Phone Number"
+                validators={[VALIDATOR_REQUIRE(), VALIDATOR_PHONE()]}
+                errorText="Please enter a valid 10-digit phone number."
+                onInput={inputHandler}
+              />
+              <Input
+                element="textarea"
+                id="address"
+                label="Address"
+                validators={[VALIDATOR_REQUIRE()]}
+                errorText="Please enter a valid address."
+                onInput={inputHandler}
+              />
+              <ImageUpload
+                center
+                id="image"
+                onInput={inputHandler}
+                errorText="Please provide an image."
+              />
+            </>
           )}
           <Input
             element="input"
