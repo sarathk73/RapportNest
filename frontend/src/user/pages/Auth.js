@@ -246,15 +246,6 @@ const Auth = () => {
                 onInput={inputHandler}
                 errorText="Please provide an image."
               />
-              <Input
-                element="input"
-                id="confirmPassword"
-                type="password"
-                label="Confirm Password"
-                validators={[VALIDATOR_REQUIRE(), VALIDATOR_MATCH(formState.inputs.password.value)]}
-                errorText="Passwords do not match."
-                onInput={inputHandler}
-              />
             </>
           )}
           <Input
@@ -275,6 +266,17 @@ const Auth = () => {
             errorText="Please enter a valid password, at least 6 characters."
             onInput={inputHandler}
           />
+          {!isLoginMode && (
+            <Input
+              element="input"
+              id="confirmPassword"
+              type="password"
+              label="Confirm Password"
+              validators={[VALIDATOR_REQUIRE(), VALIDATOR_MATCH(formState.inputs.password.value)]}
+              errorText="Passwords do not match."
+              onInput={inputHandler}
+            />
+          )}
           <Button type="submit" disabled={!formState.isValid}>
             {isLoginMode ? 'LOGIN' : 'SIGNUP'}
           </Button>
