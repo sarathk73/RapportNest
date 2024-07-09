@@ -39,3 +39,12 @@
     border-color: red;
     background: #ffd1d1;
   }
+  .form-control__radio-group {
+    display: flex;
+    align-items: center;
+  }
+  
+  .form-control__radio-group label {
+    margin-left: 0.5rem;
+  }
+  

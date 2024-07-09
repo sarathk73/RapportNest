@@ -40,7 +40,7 @@ const Input = props => {
     dispatch({
       type: 'CHANGE',
       val: event.target.value,
-      validators: props.validators
+      validators: props.validators,
     });
   };
 
@@ -60,6 +60,19 @@ const Input = props => {
         onBlur={touchHandler}
         value={inputState.value}
       />
+    ) : props.element === 'radio' ? (
+      <div className="form-control__radio-group">
+        <input
+          id={props.id + '-' + props.value}
+          name={props.name}
+          type={props.type}
+          onChange={changeHandler}
+          onBlur={touchHandler}
+          value={props.value}
+          checked={inputState.value === props.value}
+        />
+        <label htmlFor={props.id + '-' + props.value}>{props.label}</label>
+      </div>
     ) : props.element === 'select' ? (
       <select
         id={props.id}
@@ -85,7 +98,7 @@ const Input = props => {
         inputState.isTouched &&
         'form-control--invalid'}`}
     >
-      <label htmlFor={props.id}>{props.label}</label>
+      {props.element !== 'radio' && <label htmlFor={props.id}>{props.label}</label>}
       {element}
       {!inputState.isValid && inputState.isTouched && <p>{props.errorText}</p>}
     </div>
