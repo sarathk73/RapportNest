@@ -1,15 +1,61 @@
-.authentication__header {
-    color: white;
-    text-align: center;
-  }
-  
-  .authentication {
-    width: 90%;
-    max-width: 25rem;
-    margin: 7rem auto;
-    text-align: center;
-  }
-  
-  .authentication form {
-    margin-bottom: 1rem;
-  }
+.form-control__radio-group {
+  display: flex;
+  align-items: center;
+}
+
+.form-control__radio-group input {
+  margin-right: 10px;
+}
+
+.form-control__radio-group label {
+  margin-right: 20px;
+}
+
+.form-control {
+  margin-bottom: 1rem;
+}
+
+.form-control label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.form-control input,
+.form-control textarea,
+.form-control select {
+  font: inherit;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.form-control input:focus,
+.form-control textarea:focus,
+.form-control select:focus {
+  outline: none;
+  border-color: #4f005f;
+}
+
+.form-control--invalid input,
+.form-control--invalid textarea,
+.form-control--invalid select {
+  border-color: red;
+  background: #ffd1d1;
+}
+
+.form-control--invalid p {
+  color: red;
+}
+
+.authentication {
+  width: 90%;
+  max-width: 40rem;
+  margin: 2rem auto;
+  padding: 2rem;
+}
+
+button {
+  cursor: pointer;
+}

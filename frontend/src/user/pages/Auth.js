@@ -10,7 +10,8 @@ import {
   VALIDATOR_EMAIL,
   VALIDATOR_MINLENGTH,
   VALIDATOR_REQUIRE,
-  VALIDATOR_PHONE
+  VALIDATOR_PHONE,
+  VALIDATOR_MATCH
 } from '../../shared/util/validators';
 import { useForm } from '../../shared/hooks/form-hook';
 import { useHttpClient } from '../../shared/hooks/http-hook';
@@ -31,6 +32,10 @@ const Auth = () => {
       password: {
         value: '',
         isValid: false
+      },
+      confirmPassword: {
+        value: '',
+        isValid: false
       }
     },
     false
@@ -48,6 +53,7 @@ const Auth = () => {
           gender: undefined,
           phoneNumbers: undefined,
           address: undefined,
+          confirmPassword: undefined
         },
         formState.inputs.email.isValid && formState.inputs.password.isValid
       );
@@ -82,6 +88,10 @@ const Auth = () => {
           address: {
             value: '',
             isValid: false
+          },
+          confirmPassword: {
+            value: '',
+            isValid: false
           }
         },
         false
@@ -92,6 +102,11 @@ const Auth = () => {
 
   const authSubmitHandler = async event => {
     event.preventDefault();
+
+    if (!isLoginMode && formState.inputs.password.value !== formState.inputs.confirmPassword.value) {
+      // Handle password mismatch error
+      return;
+    }
 
     if (isLoginMode) {
       try {
@@ -171,34 +186,58 @@ const Auth = () => {
                 errorText="Please enter a valid date of birth."
                 onInput={inputHandler}
               />
-              <Input
-                element="select"
-                id="gender"
-                label="Gender"
-                validators={[VALIDATOR_REQUIRE()]}
-                errorText="Please select your gender."
-                onInput={inputHandler}
-              >
-                <option value="">Select Gender</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </Input>
+              <div className="form-control">
+                <label>Gender</label>
+                <Input
+                  element="radio"
+                  id="gender"
+                  name="gender"
+                  type="radio"
+                  label="Male"
+                  validators={[VALIDATOR_REQUIRE()]}
+                  errorText="Please select your gender."
+                  onInput={inputHandler}
+                  value="male"
+                />
+                <Input
+                  element="radio"
+                  id="gender"
+                  name="gender"
+                  type="radio"
+                  label="Female"
+                  validators={[VALIDATOR_REQUIRE()]}
+                  errorText="Please select your gender."
+                  onInput={inputHandler}
+                  value="female"
+                />
+                <Input
+                  element="radio"
+                  id="gender"
+                  name="gender"
+                  type="radio"
+                  label="Other"
+                  validators={[VALIDATOR_REQUIRE()]}
+                  errorText="Please select your gender."
+                  onInput={inputHandler}
+                  value="other"
+                />
+              </div>
               <Input
                 element="input"
                 id="phoneNumbers"
                 type="text"
                 label="Phone Number"
                 validators={[VALIDATOR_REQUIRE(), VALIDATOR_PHONE()]}
-                errorText="Please enter a valid 10-digit phone number."
+                errorText="Please enter a valid phone number."
                 onInput={inputHandler}
               />
               <Input
-                element="textarea"
+                element="input"
                 id="address"
+                type="text"
                 label="Address"
                 validators={[VALIDATOR_REQUIRE()]}
-                errorText="Please enter a valid address."
+                errorText="Please enter your address."
                 onInput={inputHandler}
               />
               <ImageUpload
@@ -206,6 +245,15 @@ const Auth = () => {
                 id="image"
                 onInput={inputHandler}
                 errorText="Please provide an image."
+              />
+              <Input
+                element="input"
+                id="confirmPassword"
+                type="password"
+                label="Confirm Password"
+                validators={[VALIDATOR_REQUIRE(), VALIDATOR_MATCH(formState.inputs.password.value)]}
+                errorText="Passwords do not match."
+                onInput={inputHandler}
               />
             </>
           )}
