@@ -10,31 +10,26 @@ import './MainNavigation.css';
 const MainNavigation = props => {
   const [drawerIsOpen, setDrawerIsOpen] = useState(false);
 
-  const openDrawerHandler = () => {
-    setDrawerIsOpen(true);
-  };
-
   const closeDrawerHandler = () => {
     setDrawerIsOpen(false);
   };
-
 
   return (
     <React.Fragment>
       {drawerIsOpen && <Backdrop onClick={closeDrawerHandler} />}
       <SideDrawer show={drawerIsOpen} onClick={closeDrawerHandler}>
-        <nav className="main-navigation__drawer-nav">
-          <NavLinks />
-        </nav>
+        <NavLinks />
       </SideDrawer>
 
-
       <MainHeader>
-        <button className="main-navigation__menu-btn" onClick={openDrawerHandler}>
-          <span />
-          <span />
-          <span />
-        </button>
+        <input
+          type="checkbox"
+          id="active"
+          className="menu-btn__checkbox"
+          checked={drawerIsOpen}
+          onChange={() => setDrawerIsOpen(!drawerIsOpen)}
+        />
+        <label htmlFor="active" className="menu-btn"><span /></label>
         <h1 className="main-navigation__title">
           <Link to="/">RapportNest</Link>
         </h1>
