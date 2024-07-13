@@ -1,5 +1,4 @@
-import React, { useState, useContext } from 'react';
-
+import React, { useState, useContext, useEffect } from 'react';
 import Card from '../../shared/components/UIElements/Card';
 import Input from '../../shared/components/FormElements/Input';
 import Button from '../../shared/components/FormElements/Button';
@@ -41,19 +40,12 @@ const Auth = () => {
     false
   );
 
-  const switchModeHandler = () => {
-    if (!isLoginMode) {
+  useEffect(() => {
+    if (isLoginMode) {
       setFormData(
         {
-          ...formState.inputs,
-          firstName: undefined,
-          lastName: undefined,
-          image: undefined,
-          dateOfBirth: undefined,
-          gender: undefined,
-          phoneNumbers: undefined,
-          address: undefined,
-          confirmPassword: undefined
+          email: formState.inputs.email,
+          password: formState.inputs.password
         },
         formState.inputs.email.isValid && formState.inputs.password.isValid
       );
@@ -61,42 +53,21 @@ const Auth = () => {
       setFormData(
         {
           ...formState.inputs,
-          firstName: {
-            value: '',
-            isValid: false
-          },
-          lastName: {
-            value: '',
-            isValid: false
-          },
-          image: {
-            value: null,
-            isValid: false
-          },
-          dateOfBirth: {
-            value: '',
-            isValid: false
-          },
-          gender: {
-            value: '',
-            isValid: false
-          },
-          phoneNumbers: {
-            value: '',
-            isValid: false
-          },
-          address: {
-            value: '',
-            isValid: false
-          },
-          confirmPassword: {
-            value: '',
-            isValid: false
-          }
+          firstName: { value: '', isValid: false },
+          lastName: { value: '', isValid: false },
+          image: { value: null, isValid: false },
+          dateOfBirth: { value: '', isValid: false },
+          gender: { value: '', isValid: false },
+          phoneNumbers: { value: '', isValid: false },
+          address: { value: '', isValid: false },
+          confirmPassword: { value: '', isValid: false }
         },
-        false
+        formState.inputs.email.isValid && formState.inputs.password.isValid
       );
     }
+  }, [isLoginMode, setFormData]);
+
+  const switchModeHandler = () => {
     setIsLoginMode(prevMode => !prevMode);
   };
 
