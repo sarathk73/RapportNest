@@ -1,5 +1,4 @@
 import React,{useState, useContext} from 'react';
-
 import Card from '../../shared/components/UIElements/Card';
 import Button from '../../shared/components/FormElements/Button';
 import Modal from '../../shared/components/UIElements/Modal';
@@ -72,17 +71,18 @@ const ContactItem = props => {
             <h3>{props.phone}</h3>
             <p>{props.description}</p>
           </div>
-          <div className="contact-item__actions">
-            {auth.userId === props.creatorId && (
-              <Button to={`/contacts/${props.id}`}>EDIT</Button>
-            )}
-
-            {auth.userId === props.creatorId && (
-              <Button danger onClick={showDeleteWarningHandler}>
-                DELETE
-              </Button>
-            )}
-          </div>
+          {!props.isSearchResult && (
+            <div className="contact-item__actions">
+              {auth.userId === props.creatorId && (
+                <Button to={`/contacts/${props.id}`}>EDIT</Button>
+              )}
+              {auth.userId === props.creatorId && (
+                <Button danger onClick={showDeleteWarningHandler}>
+                  DELETE
+                </Button>
+              )}
+            </div>
+          )}
         </Card>
       </li>
     </React.Fragment>
