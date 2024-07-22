@@ -13,7 +13,7 @@ import {
 import { useForm } from '../../shared/hooks/form-hook';
 import { useHttpClient } from '../../shared/hooks/http-hook';
 import { AuthContext } from '../../shared/context/auth-context';
-import './NewContact.css';
+import '../../user/pages/Auth.css';
 
 const UpdateContact = () => {
   const auth = useContext(AuthContext);
@@ -112,17 +112,18 @@ const UpdateContact = () => {
     <React.Fragment>
       <ErrorModal error={error} onClear={clearError} />
       {!isLoading && loadedContact && (
-        <form className="contact-form" onSubmit={contactUpdateSubmitHandler}>
+        <form className="auth-container" onSubmit={contactUpdateSubmitHandler}>
           <Input
             id="title"
             element="input"
             type="text"
-            label="Title"
+            label="Full Name"
             validators={[VALIDATOR_REQUIRE()]}
             errorText="Please enter a valid name."
             onInput={inputHandler}
             initialValue={loadedContact.title}
             initialValid={true}
+            className="auth-input"
           />
           <Input
             id="description"
@@ -133,6 +134,7 @@ const UpdateContact = () => {
             onInput={inputHandler}
             initialValue={loadedContact.description}
             initialValid={true}
+            className="auth-input"
           />
           <Input
             id="phone"
@@ -144,8 +146,9 @@ const UpdateContact = () => {
             onInput={inputHandler}
             initialValue={loadedContact.phone}
             initialValid={true}
+            className="auth-input"
           />
-          <Button type="submit" disabled={!formState.isValid}>
+          <Button type="submit" disabled={!formState.isValid} className="auth-button">
             UPDATE CONTACT
           </Button>
         </form>
