@@ -31,7 +31,7 @@ const MainNavigation = props => {
         />
         <label htmlFor="active" className="menu-btn"><span /></label>
         <h1 className="main-navigation__title">
-          <Link to="/">RapportNest</Link>
+          <Link to="/">Rapport Nest</Link>
         </h1>
         <nav className="main-navigation__header-nav">
           <NavLinks />
