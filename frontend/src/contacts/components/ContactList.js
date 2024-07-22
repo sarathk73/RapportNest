@@ -5,8 +5,8 @@ import Button from '../../shared/components/FormElements/Button';
 import ContactItem from './ContactItem';
 import './ContactList.css';
 
-const ContactList = props => {
-  if (props.items.length === 0) {
+const ContactList = (props) => {
+  if (props.searchInitiated && props.items.length === 0) {
     return (
       <div className="contact-list center">
         <Card>
@@ -29,6 +29,7 @@ const ContactList = props => {
           phone={contact.phone}
           creatorId={contact.creator}
           onDelete={props.onDeleteContact}
+          isSearchResult={props.isSearchResult}
         />
       ))}
     </ul>
