@@ -1,4 +1,4 @@
-import React  from 'react';
+import React from 'react';
 import {
   BrowserRouter as Router,
   Route,
@@ -10,13 +10,13 @@ import Users from './user/pages/Users';
 import NewContact from './contacts/pages/NewContact';
 import UserContacts from './contacts/pages/UserContact';
 import UpdateContact from './contacts/pages/UpdateContact';
+import SearchContacts from './contacts/pages/SearchContacts';
 import Auth from './user/pages/Auth';
 import MainNavigation from './shared/components/Navigation/MainNavigation';
 import { AuthContext } from './shared/context/auth-context';
 import { useAuth } from './shared/hooks/auth-hook';
 
 const App = () => {
-  
   const { token, login, logout, userId } = useAuth();
 
   let routes;
@@ -27,13 +27,16 @@ const App = () => {
         <Route path="/" exact>
           <Users />
         </Route>
+        <Route path="/contacts/search" exact>
+          <SearchContacts />
+        </Route>
         <Route path="/:userId/contacts" exact>
           <UserContacts />
         </Route>
         <Route path="/contacts/new" exact>
           <NewContact />
         </Route>
-        <Route path="/contacts/:contactId">
+        <Route path="/contacts/:contactId" exact>
           <UpdateContact />
         </Route>
         <Redirect to="/" />
@@ -45,10 +48,7 @@ const App = () => {
         <Route path="/" exact>
           <Users />
         </Route>
-        <Route path="/:userId/contacts" exact>
-          <UserContacts />
-        </Route>
-        <Route path="/auth">
+        <Route path="/auth" exact>
           <Auth />
         </Route>
         <Redirect to="/auth" />
