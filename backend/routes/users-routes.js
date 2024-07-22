@@ -1,6 +1,6 @@
 const express = require('express');
 const { check } = require('express-validator');
-
+const { parsePhoneNumberFromString } = require('libphonenumber-js');
 const usersController = require('../controllers/users-controllers');
 const fileUpload = require('../middleware/file-upload');
 const parsePhoneNumbers = require('../middleware/parse-phone-numbers');
@@ -21,8 +21,11 @@ router.post(
     check('dateOfBirth').not().isEmpty(),
     check('gender').not().isEmpty(),
     check('phoneNumbers').isArray({ min: 1 }).custom((value) => {
-      if (value.some(phoneNumber => !/^\d{10}$/.test(phoneNumber))) {
-        throw new Error('Invalid phone number(s). Each phone number must be a 10-digit number.');
+      if (value.some(phoneNumber => {
+        const phoneNumberObj = parsePhoneNumberFromString(phoneNumber, 'IN'); 
+        return !phoneNumberObj || !phoneNumberObj.isValid();
+      })) {
+        throw new Error('Invalid phone number(s).');
       }
       return true;
     }),
