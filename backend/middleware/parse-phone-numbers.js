@@ -7,13 +7,13 @@ const parsePhoneNumbers = (req, res, next) => {
       req.body.phoneNumbers = JSON.parse(req.body.phoneNumbers);
       console.log('After Parsing:', req.body.phoneNumbers);
 
-      // Validate and format phone numbers
+      
       req.body.phoneNumbers = req.body.phoneNumbers.map(phoneNumber => {
-        const phoneNumberObj = parsePhoneNumberFromString(phoneNumber, 'IN'); // Adjust default region if necessary
+        const phoneNumberObj = parsePhoneNumberFromString(phoneNumber, 'IN'); 
         if (!phoneNumberObj || !phoneNumberObj.isValid()) {
           throw new Error('Invalid phone number format.');
         }
-        return phoneNumberObj.number; // Use normalized number
+        return phoneNumberObj.number; 
       });
 
     } catch (err) {
