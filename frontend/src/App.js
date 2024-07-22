@@ -46,7 +46,7 @@ const App = () => {
     routes = (
       <Switch>
         <Route path="/" exact>
-          <Users />
+          <Auth />
         </Route>
         <Route path="/auth" exact>
           <Auth />
