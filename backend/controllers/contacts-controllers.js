@@ -50,7 +50,7 @@ const getContactsByUserId = async (req, res, next) => {
     return next(error);
   }
 
-  // if (!contacts || contacts.length === 0) {
+  
   if (!userWithContacts || userWithContacts.contacts.length === 0) {
     return next(
       new HttpError('Could not find contacts for the provided user id.', 404)
@@ -205,9 +205,71 @@ const getContactsByUserId = async (req, res, next) => {
   
     res.status(200).json({ message: 'Deleted contact.' });
   };
+
+  const getContactsByUserIdPaginated = async (req, res, next) => {
+    const userId = req.params.uid;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 3;
+  
+    let contacts;
+    try {
+      contacts = await Contact.find({ creator: userId })
+        .skip((page - 1) * limit)
+        .limit(limit);
+    } catch (err) {
+      const error = new HttpError(
+        'Fetching contacts failed, please try again later.',
+        500
+      );
+      return next(error);
+    }
+  
+    const totalContacts = await Contact.countDocuments({ creator: userId });
+  
+    res.json({
+      contacts: contacts.map(contact => contact.toObject({ getters: true })),
+      currentPage: page,
+      totalPages: Math.ceil(totalContacts / limit)
+    });
+  };
+  
+  const searchContacts = async (req, res, next) => {
+    const { name } = req.query;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 3;
+
+    let contacts;
+    try {
+        
+        contacts = await Contact.find({
+            title: new RegExp(name, 'i')
+        })
+        .skip((page - 1) * limit)
+        .limit(limit);
+    } catch (err) {
+        const error = new HttpError(
+            'Fetching contacts failed, please try again later.',
+            500
+        );
+        return next(error);
+    }
+
+    const totalContacts = await Contact.countDocuments({
+        title: new RegExp(name, 'i')
+    });
+
+    res.json({
+        contacts: contacts.map(contact => contact.toObject({ getters: true })),
+        currentPage: page,
+        totalPages: Math.ceil(totalContacts / limit)
+    });
+};
+
   
 exports.getContactById = getContactById;
 exports.getContactsByUserId = getContactsByUserId; 
 exports.createContact = createContact;
 exports.updateContact = updateContact;
 exports.deleteContact = deleteContact;
+exports.getContactsByUserIdPaginated = getContactsByUserIdPaginated;
+exports.searchContacts = searchContacts;
