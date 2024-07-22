@@ -1,17 +1,35 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap');
+
+@import url('https://fonts.googleapis.com/css?family=Fjalla+One&display=swap');
+
 
 * {
   box-sizing: border-box;
 }
 
+
 html {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Fjalla One', sans-serif;
 }
+
 
 body {
   margin: 0;
-  background: #eaeef6;
+  background: #eaeef6; 
+  font-family: 'Fjalla One', sans-serif; 
 }
+
+
+.background-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/38816/image-from-rawpixel-id-2210775-jpeg.jpg') center center no-repeat;
+  background-size: cover;
+  z-index: -1; 
+}
+
 
 .slide-in-left-enter {
   transform: translateX(-100%);
