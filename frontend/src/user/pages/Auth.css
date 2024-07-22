@@ -1,29 +1,151 @@
-.form-control__radio-group {
+body {
+  background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/38816/image-from-rawpixel-id-2210775-jpeg.jpg") center center no-repeat;
+  background-size: cover;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  flex-direction: column;
+}
+
+.auth-container {
+  background: #f8f4e5;
+  padding: 50px;
+  border: 2px solid rgba(0, 0, 0, 1);
+  box-shadow: 15px 15px 1px #ffa580, 15px 15px 1px 2px rgba(0, 0, 0, 1);
+  transition: margin-top 0.5s, width 0.5s;
+  max-width: 500px;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex; /* Added */
+  flex-direction: column; /* Added */
+  align-items: center; /* Added */
+  justify-content: center; /* Added */
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 30px;
+}
+
+.auth-login-mode {
+  margin-top: 0; /* Center the login form */
+}
+
+.auth-signup-mode {
+  margin-top: 30px; /* Adjust this value to position the signup form correctly */
+}
+
+.phone-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.country-selector{
+  margin-right: 0.5rem;
+  padding: 0.3rem;
+  font-size: 14pt;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.phone-label-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.phone-label-container label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.auth-input {
+  display: block;
+  width: 100%;
+  font-size: 14pt;
+  line-height: 28pt;
+  font-family: 'Fjalla One';
+  margin-bottom: 28pt;
+  border: none;
+  border-bottom: 5px solid rgba(0, 0, 0, 1);
+  background: #f8f4e5;
+  min-width: 250px;
+  padding-left: 5px;
+  outline: none;
+  color: rgba(0, 0, 0, 1);
+}
+
+.auth-input:focus {
+  border-bottom: 5px solid #ffa580;
+}
+
+.auth-button {
+  display: block;
+  margin: 0 auto;
+  line-height: 28pt;
+  padding: 0 20px;
+  background: #ffa580;
+  letter-spacing: 2px;
+  transition: .2s all ease-in-out;
+  outline: none;
+  border: 1px solid rgba(0, 0, 0, 1);
+  box-shadow: 3px 3px 1px 1px #95a4ff, 3px 3px 1px 2px rgba(0, 0, 0, 1);
+}
+
+.auth-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+
+.auth-button:hover {
+  background: rgba(0, 0, 0, 1);
+  color: white;
+  border: 1px solid rgba(0, 0, 0, 1);
+}
+
+::selection {
+  background: #ffc8ff;
+}
+
+.auth-input:-webkit-autofill,
+.auth-input:-webkit-autofill:hover,
+.auth-input:-webkit-autofill:focus {
+  border-bottom: 5px solid #95a4ff;
+  -webkit-text-fill-color: #2A293E;
+  -webkit-box-shadow: 0 0 0px 1000px #f8f4e5 inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.auth-form-control__radio-group {
   display: flex;
   align-items: center;
 }
 
-.form-control__radio-group input {
+.auth-form-control__radio-group input {
   margin-right: 10px;
 }
 
-.form-control__radio-group label {
+.auth-form-control__radio-group label {
   margin-right: 20px;
 }
 
-.form-control {
+.auth-form-control {
   margin-bottom: 1rem;
 }
 
-.form-control label {
+.auth-form-control label {
   font-weight: bold;
   display: block;
   margin-bottom: 0.5rem;
 }
 
-.form-control input,
-.form-control textarea,
-.form-control select {
+.auth-form-control input,
+.auth-form-control textarea,
+.auth-form-control select {
   font: inherit;
   padding: 0.5rem;
   border: 1px solid #ccc;
@@ -31,31 +153,117 @@
   width: 100%;
 }
 
-.form-control input:focus,
-.form-control textarea:focus,
-.form-control select:focus {
+.auth-form-control input:focus,
+.auth-form-control textarea:focus,
+.auth-form-control select:focus {
   outline: none;
   border-color: #4f005f;
 }
 
-.form-control--invalid input,
-.form-control--invalid textarea,
-.form-control--invalid select {
+.auth-form-control--invalid input,
+.auth-form-control--invalid textarea,
+.auth-form-control--invalid select {
   border-color: red;
   background: #ffd1d1;
 }
 
-.form-control--invalid p {
+.auth-form-control--invalid p {
   color: red;
 }
 
-.authentication {
+.auth-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.auth-buttons .auth-button {
+  width: 48%;
+  margin-bottom: 10px; /* Add space between buttons */
+}
+
+.auth-buttons .auth-button:last-child {
+  margin-bottom: 0; /* Ensure last button doesn't have bottom margin */
+}
+
+.auth-authentication {
   width: 90%;
   max-width: 40rem;
   margin: 2rem auto;
   padding: 2rem;
 }
 
-button {
+.auth-button {
   cursor: pointer;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 1024px) {
+  .auth-container {
+    max-width: 90%;
+    padding: 30px;
+  }
+
+  .auth-input {
+    font-size: 13pt;
+    margin-bottom: 25pt;
+  }
+
+  .auth-buttons .auth-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .auth-container {
+    max-width: 90%;
+    padding: 20px;
+  }
+
+  .auth-input {
+    font-size: 12pt;
+    margin-bottom: 20pt;
+  }
+
+  .auth-buttons .auth-button {
+    width: 100%; /* Full width buttons in smaller screens */
+    margin-bottom: 10px; /* Add space between buttons */
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-container {
+    max-width: 95%;
+    padding: 15px;
+  }
+
+  .auth-input {
+    font-size: 12pt;
+    margin-bottom: 20pt;
+  }
+
+  .auth-buttons {
+    flex-direction: column;
+    flex-direction: column; /* Stack buttons vertically */
+    gap: 10px; /* Add space between buttons */
+    margin-top: 1rem;
+  }
+
+  .auth-buttons .auth-button {
+    width: 100%;
+    margin-bottom: 10px; /* Add space between buttons */
+  }
+
+  .auth-buttons .auth-button:last-child {
+    margin-bottom: 0; /* Ensure last button doesn't have bottom margin */
+  }
+
+  .phone-container {
+    display: block; /* Remove flex layout on smaller devices */
+    align-items: flex-start; /* Optional: Align items to the start */
+  }
+
+  .country-selector, .auth-input {
+    margin-bottom: 0.5rem; /* Optional: Add spacing between elements */
+  }
 }
