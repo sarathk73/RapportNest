@@ -148,7 +148,11 @@ const Auth = () => {
 
   return (
     <React.Fragment>
-      <ErrorModal error={error || verificationMessage} onClear={() => { clearError(); setVerificationMessage(''); }} />
+      <ErrorModal
+        error={error || verificationMessage}
+        header={verificationMessage ? "Verification Decision" : "An Error Occurred!"}
+        onClear={() => { clearError(); setVerificationMessage(''); }}
+      />
       <div className={`auth-container ${isLoginMode ? 'auth-login-mode' : 'auth-signup-mode'}`}>
         {isLoading && <LoadingSpinner asOverlay />}
         <h2>{isLoginMode ? 'Login Required' : 'Signup Required'}</h2>
