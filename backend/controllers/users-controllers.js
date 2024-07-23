@@ -34,7 +34,13 @@ const signup = async (req, res, next) => {
 
   let existingUser;
   try {
-    existingUser = await User.findOne({ email: email });
+   
+    existingUser = await User.findOne({
+      $or: [
+        { email: email },
+        { phoneNumbers: phoneNumbers }
+      ]
+    });
   } catch (err) {
     const error = new HttpError(
       'Signing up failed, please try again later.',
@@ -45,7 +51,7 @@ const signup = async (req, res, next) => {
 
   if (existingUser) {
     const error = new HttpError(
-      'User exists already, please login instead.',
+      'User with this email or phone number already exists, please login instead.',
       422
     );
     return next(error);
