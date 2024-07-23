@@ -4,7 +4,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-
+const authLimiter = require('./middleware/rateLimit');
 const contactsRoutes = require('./routes/contacts-routes');
 const usersRoutes = require('./routes/users-routes');
 const HttpError = require('./models/http-error');
@@ -26,7 +26,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/api/contacts', contactsRoutes); 
+app.use('/api/users/login', authLimiter);
+
+app.use('/api/contacts', contactsRoutes);
 app.use('/api/users', usersRoutes);
 
 app.use((req, res, next) => {
@@ -35,18 +37,27 @@ app.use((req, res, next) => {
 });
 
 app.use((error, req, res, next) => {
-    console.error(error); // Log the error for debugging
-    if (req.file) {
-      fs.unlink(req.file.path, err => {
+  if (error.message && (error.message.includes('Invalid file type') || error.message.includes('File too large'))) {
+    return res.status(400).json({ message: error.message });
+  }
+
+  console.error(error); 
+
+  if (req.file) {
+    fs.unlink(req.file.path, err => {
+      if (err) {
         console.log(err);
-      });
-    }
-    if (res.headerSent) {
-      return next(error);
-    }
-    res.status(error.code || 500)
-    res.json({message: error.message || 'An unknown error occurred!'});
+      }
+    });
+  }
+
+  if (res.headerSent) {
+    return next(error);
+  }
+
+  res.status(error.code || 500).json({ message: error.message || 'An unknown error occurred!' });
 });
+
 mongoose
   .connect('mongodb+srv://sarath:9142Sarath@cluster0.gxgwut1.mongodb.net/mern?retryWrites=true&w=majority&appName=Cluster0')
   .then(() => {
@@ -54,4 +65,4 @@ mongoose
   })
   .catch(err => {
     console.log(err);
-});
+  });
