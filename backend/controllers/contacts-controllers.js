@@ -7,6 +7,8 @@ const HttpError = require('../models/http-error');
 const Contact = require('../models/contact');
 const User = require('../models/user');
 
+const DEFAULT_IMAGE_URL = 'uploads/images/no-user.jpg';
+
 
 const getContactById = async (req, res, next) => {
   const contactId = req.params.pid; 
@@ -37,12 +39,12 @@ const getContactById = async (req, res, next) => {
 const getContactsByUserId = async (req, res, next) => {
   const userId = req.params.uid;
 
-  // let contacts;
+  
   let userWithContacts;
   try {
     userWithContacts = await User.findById(userId).populate('contacts');
   } catch (err) {
-    console.error(`Error fetching contacts for user ${userId}: `, err); // Improved error logging
+    console.error(`Error fetching contacts for user ${userId}: `, err); 
     const error = new HttpError(
       'Fetching Contacts failed, please try again later',
       500
@@ -60,56 +62,58 @@ const getContactsByUserId = async (req, res, next) => {
   res.json({ contacts: userWithContacts.contacts.map(contact => contact.toObject({ getters: true })) });
 };
 
-  const createContact = async (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return next(
-        new HttpError('Invalid inputs passed, please check your data.', 422)
-      );
-    }
-  
-    const { title, description, phone,} = req.body;
-  
-    const createdContact = new Contact({
-      title,
-      description,
-      phone,
-      image:req.file.path,
-      creator:req.userData.userId
-    });
-  
-    let user;
-    try {
-      user = await User.findById(req.userData.userId);
-    } catch (err) {
-      const error = new HttpError('Creating contact failed, please try again', 500);
-      return next(error);
-    }
-  
-    if (!user) {
-      const error = new HttpError('Could not find user for provided id', 404);
-      return next(error);
-    }
-  
-    console.log(user);
-  
-    try {
-      const sess = await mongoose.startSession();
-      sess.startTransaction();
-      await createdContact.save({ session: sess });
-      user.contacts.push(createdContact);
-      await user.save({ session: sess });
-      await sess.commitTransaction();
-    } catch (err) {
-      const error = new HttpError(
-        'Creating contact failed, please try again.',
-        500
-      );
-      return next(error);
-    }
-  
-    res.status(201).json({ contact: createdContact });
-  };
+const createContact = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(new HttpError('Invalid inputs passed, please check your data.', 422));
+  }
+
+  const { title, description, phone } = req.body;
+
+  let imagePath;
+  if (req.file) {
+    imagePath = req.file.path;
+  } else {
+    imagePath = DEFAULT_IMAGE_URL; 
+  }
+
+  const createdContact = new Contact({
+    title,
+    description,
+    image: imagePath,
+    phone,
+    creator: req.userData.userId
+  });
+
+  let user;
+  try {
+    user = await User.findById(req.userData.userId);
+  } catch (err) {
+    const error = new HttpError('Creating contact failed, please try again.', 500);
+    return next(error);
+  }
+
+  if (!user) {
+    const error = new HttpError('Could not find user for provided id.', 404);
+    return next(error);
+  }
+
+  try {
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+    await createdContact.save({ session: sess });
+    user.contacts.push(createdContact);
+    await user.save({ session: sess });
+    await sess.commitTransaction();
+  } catch (err) {
+    const error = new HttpError('Creating contact failed, please try again.', 500);
+    return next(error);
+  }
+
+  res.status(201).json({ contact: createdContact });
+};
+
+
 
   const updateContact = async (req, res, next) => {
     const errors = validationResult(req);
