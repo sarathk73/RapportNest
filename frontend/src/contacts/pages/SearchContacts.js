@@ -25,7 +25,7 @@ const SearchContacts = () => {
     setSearchError(null);
     try {
       const responseData = await sendRequest(
-        `http://localhost:5000/api/contacts/search?name=${searchTerm}&page=${currentPage}`
+        `${process.env.REACT_APP_BACKEND_URL}/contacts/search?name=${searchTerm}&page=${currentPage}`
       );
       setLoadedContacts(responseData.contacts);
       setTotalPages(responseData.totalPages);

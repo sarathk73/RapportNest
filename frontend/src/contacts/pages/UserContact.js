@@ -17,7 +17,7 @@ const UserContacts = () => {
     const fetchContacts = async () => {
       try {
         const responseData = await sendRequest(
-          `http://localhost:5000/api/contacts/user/${userId}/paginated?page=${currentPage}`
+          `${process.env.REACT_APP_BACKEND_URL}/contacts/user/${userId}/paginated?page=${currentPage}`
         );
         setLoadedContacts(responseData.contacts);
         setTotalPages(responseData.totalPages);

@@ -15,7 +15,7 @@ const FilteredContacts = () => {
   const fetchContactsByTag = async (tag, page = 1) => {
     console.log(`Fetching contacts for tag: ${tag}, page: ${page}`);
     try {
-      const responseData = await sendRequest(`http://localhost:5000/api/contacts/tag/${tag}?page=${page}`);
+      const responseData = await sendRequest(`${process.env.REACT_APP_BACKEND_URL}/contacts/tag/${tag}?page=${page}`);
       console.log('Contacts fetched:', responseData.contacts);
       setLoadedContacts(responseData.contacts);
       setTotalPages(responseData.totalPages);

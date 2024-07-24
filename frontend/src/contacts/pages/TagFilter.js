@@ -17,7 +17,7 @@ const TagFilter = () => {
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const responseData = await sendRequest('http://localhost:5000/api/contacts/tags');
+        const responseData = await sendRequest(`${process.env.REACT_APP_BACKEND_URL}/contacts/tags`);
         setTags(responseData.tags);
       } catch (err) {}
     };
@@ -29,7 +29,7 @@ const TagFilter = () => {
       if (selectedTag) {
         try {
           const responseData = await sendRequest(
-            `http://localhost:5000/api/contacts/tag/${selectedTag}?page=${currentPage}`
+            `${process.env.REACT_APP_BACKEND_URL}/contacts/tag/${selectedTag}?page=${currentPage}`
           );
           setLoadedContacts(responseData.contacts);
           setTotalPages(responseData.totalPages);

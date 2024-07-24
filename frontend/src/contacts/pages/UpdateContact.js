@@ -45,7 +45,7 @@ const UpdateContact = () => {
     const fetchContact = async () => {
       try {
         const responseData = await sendRequest(
-          `http://localhost:5000/api/contacts/${contactId}`
+          `${process.env.REACT_APP_BACKEND_URL}/contacts/${contactId}`
         );
         setLoadedContact(responseData.contact);
         setFormData(
@@ -63,7 +63,7 @@ const UpdateContact = () => {
               isValid: true
             },
             tags: {
-              value: responseData.contact.tags.join(', '), // Join tags into a comma-separated string
+              value: responseData.contact.tags.join(', '), 
               isValid: true
             }
           },
@@ -79,7 +79,7 @@ const UpdateContact = () => {
     event.preventDefault();
     try {
       await sendRequest(
-        `http://localhost:5000/api/contacts/${contactId}`,
+        `${process.env.REACT_APP_BACKEND_URL}/contacts/${contactId}`,
         'PATCH',
         JSON.stringify({
           title: formState.inputs.title.value,

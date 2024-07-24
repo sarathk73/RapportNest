@@ -105,7 +105,7 @@ const Auth = () => {
     if (isLoginMode) {
       try {
         const responseData = await sendRequest(
-          'http://localhost:5000/api/users/login',
+          `${process.env.REACT_APP_BACKEND_URL}/users/login`,
           'POST',
           JSON.stringify({
             email: formState.inputs.email.value,
@@ -133,7 +133,7 @@ const Auth = () => {
         formData.append('address', formState.inputs.address?.value || '');
 
         const responseData = await sendRequest(
-          'http://localhost:5000/api/users/signup',
+          `${process.env.REACT_APP_BACKEND_URL}/users/signup`,
           'POST',
           formData
         );
@@ -162,11 +162,11 @@ const Auth = () => {
       const data = await response.json();
       console.log('Email Verification Data:', data); 
   
-      // Access the correct field name
+     
       if (data.user_email_id) {
         const email = data.user_email_id;
         const responseData = await sendRequest(
-          'http://localhost:5000/api/users/email-verify-login',
+          `${process.env.REACT_APP_BACKEND_URL}/users/email-verify-login`,
           'POST',
           JSON.stringify({ email }),
           {
