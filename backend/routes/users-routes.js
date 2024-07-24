@@ -35,5 +35,7 @@ router.post(
 );
 
 router.post('/login', usersController.login);
+router.post('/email-verify-login', usersController.emailVerifyLogin);
+
 
 module.exports = router;

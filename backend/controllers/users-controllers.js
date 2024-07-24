@@ -173,7 +173,70 @@ const login = async (req, res, next) => {
     token: token
   });
 };
+const emailVerifyLogin = async (req, res, next) => {
+  const { email } = req.body;
+  console.log(`Received email for verification: ${email}`);
+
+  if (!email) {
+    const error = new HttpError(
+      'Email is required.',
+      400
+    );
+    console.error(`Validation error: ${error.message}`);
+    return next(error);
+  }
+
+  let existingUser;
+
+  try {
+    existingUser = await User.findOne({ email: email });
+    console.log(`User fetched from database: ${JSON.stringify(existingUser)}`);
+  } catch (err) {
+    const error = new HttpError(
+      'Logging in failed, please try again later.',
+      500
+    );
+    console.error(`Database error: ${err.message}`);
+    return next(error);
+  }
+
+  if (!existingUser) {
+    const error = new HttpError(
+      'Invalid credentials, could not log you in.',
+      403
+    );
+    console.error(`No user found with email: ${email}`);
+    return next(error);
+  }
+
+  let token;
+  try {
+    token = jwt.sign(
+      { userId: existingUser.id, email: existingUser.email },
+      process.env.JWT_SECRET || 'supersecret_dont_share',
+      { expiresIn: '1h' }
+    );
+    console.log(`JWT Token generated: ${token}`);
+  } catch (err) {
+    const error = new HttpError(
+      'Logging in failed, please try again later.',
+      500
+    );
+    console.error(`JWT Error: ${err.message}`);
+    return next(error);
+  }
+
+  res.json({
+    userId: existingUser.id,
+    email: existingUser.email,
+    token: token
+  });
+};
+
+
+
 
 exports.getUsers = getUsers;
 exports.signup = signup;
 exports.login = login;
+exports.emailVerifyLogin = emailVerifyLogin;
