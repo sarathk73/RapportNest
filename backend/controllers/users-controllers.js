@@ -22,19 +22,18 @@ const getUsers = async (req, res, next) => {
 const signup = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    console.log(errors.array());  
+    console.log(errors.array());
     return next(
       new HttpError('Invalid inputs passed, please check your data.', 422)
     );
   }
 
-  console.log(req.body); 
+  console.log(req.body);
 
   const { firstName, lastName, email, password, dateOfBirth, gender, phoneNumbers, address } = req.body;
 
   let existingUser;
   try {
-   
     existingUser = await User.findOne({
       $or: [
         { email: email },
@@ -95,7 +94,7 @@ const signup = async (req, res, next) => {
   try {
     token = jwt.sign(
       { userId: createdUser.id, email: createdUser.email },
-      'supersecret_dont_share',
+      process.env.JWT_KEY,
       { expiresIn: '1h' }
     );
   } catch (err) {
@@ -108,7 +107,6 @@ const signup = async (req, res, next) => {
 
   res.status(201).json({ userId: createdUser.id, email: createdUser.email, token: token });
 };
-
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
@@ -156,7 +154,7 @@ const login = async (req, res, next) => {
   try {
     token = jwt.sign(
       { userId: existingUser.id, email: existingUser.email },
-      'supersecret_dont_share',
+      process.env.JWT_KEY,
       { expiresIn: '1h' }
     );
   } catch (err) {
@@ -173,6 +171,7 @@ const login = async (req, res, next) => {
     token: token
   });
 };
+
 const emailVerifyLogin = async (req, res, next) => {
   const { email } = req.body;
   console.log(`Received email for verification: ${email}`);
@@ -213,7 +212,7 @@ const emailVerifyLogin = async (req, res, next) => {
   try {
     token = jwt.sign(
       { userId: existingUser.id, email: existingUser.email },
-      process.env.JWT_SECRET || 'supersecret_dont_share',
+      process.env.JWT_KEY,
       { expiresIn: '1h' }
     );
     console.log(`JWT Token generated: ${token}`);
@@ -232,9 +231,6 @@ const emailVerifyLogin = async (req, res, next) => {
     token: token
   });
 };
-
-
-
 
 exports.getUsers = getUsers;
 exports.signup = signup;
