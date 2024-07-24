@@ -8,6 +8,9 @@ const parsePhoneNumber = require('../middleware/parse-phone-number');
 
 const router = express.Router();
 
+router.get('/tags', contactsControllers.getAllTags);
+router.get('/tag/:tag', contactsControllers.getContactsByTag);
+
 router.get('/search', contactsControllers.searchContacts);
 
 router.get('/:pid', contactsControllers.getContactById);

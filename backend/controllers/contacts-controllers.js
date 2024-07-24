@@ -68,21 +68,25 @@ const createContact = async (req, res, next) => {
     return next(new HttpError('Invalid inputs passed, please check your data.', 422));
   }
 
-  const { title, description, phone } = req.body;
+  const { title, description, phone, tags } = req.body;
 
   let imagePath;
   if (req.file) {
     imagePath = req.file.path;
   } else {
-    imagePath = DEFAULT_IMAGE_URL; 
+    imagePath = DEFAULT_IMAGE_URL;
   }
+
+  console.log('Received Tags:', tags); 
+  const parsedTags = JSON.parse(tags);
 
   const createdContact = new Contact({
     title,
     description,
     image: imagePath,
     phone,
-    creator: req.userData.userId
+    creator: req.userData.userId,
+    tags: parsedTags
   });
 
   let user;
@@ -115,52 +119,55 @@ const createContact = async (req, res, next) => {
 
 
 
-  const updateContact = async (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return next(
-        new HttpError('Invalid inputs passed, please check your data.', 422)
-      );
-    }
-  
-    const { title, description,phone} = req.body;
-    const contactId = req.params.pid;
-  
-    let contact;
-    try {
-      contact = await Contact.findById(contactId);
-    } catch (err) {
-      const error = new HttpError(
-        'Something went wrong, could not update contact.',
-        500
-      );
-      return next(error);
-    }
 
-    if (contact.creator.toString() !== req.userData.userId) {
-      const error = new HttpError(
-        'You are not allowed to edit this contact.',
-        401
-      );
-      return next(error);
-    }
-  
-    contact.title = title;
-    contact.description = description;
-    contact.phone = phone;
-  
-    try {
-      await contact.save();
-    } catch (err) {
-      const error = new HttpError(
-        'Something went wrong, could not update contact.',
-        500
-      );
-      return next(error);
-    }
-  
-    res.status(200).json({ contact: contact.toObject({ getters: true }) });
-  };
+const updateContact = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(
+      new HttpError('Invalid inputs passed, please check your data.', 422)
+    );
+  }
+
+  const { title, description, phone, tags } = req.body;
+  const contactId = req.params.pid;
+
+  let contact;
+  try {
+    contact = await Contact.findById(contactId);
+  } catch (err) {
+    const error = new HttpError(
+      'Something went wrong, could not update contact.',
+      500
+    );
+    return next(error);
+  }
+
+  if (contact.creator.toString() !== req.userData.userId) {
+    const error = new HttpError(
+      'You are not allowed to edit this contact.',
+      401
+    );
+    return next(error);
+  }
+
+  contact.title = title;
+  contact.description = description;
+  contact.phone = phone;
+  contact.tags = JSON.parse(tags);
+
+  try {
+    await contact.save();
+  } catch (err) {
+    const error = new HttpError(
+      'Something went wrong, could not update contact.',
+      500
+    );
+    return next(error);
+  }
+
+  res.status(200).json({ contact: contact.toObject({ getters: true }) });
+};
+
   
 
   const deleteContact = async (req, res, next) => {
@@ -268,6 +275,49 @@ const createContact = async (req, res, next) => {
         totalPages: Math.ceil(totalContacts / limit)
     });
 };
+const getAllTags = async (req, res, next) => {
+  try {
+    const tags = await Contact.aggregate([
+      { $unwind: "$tags" },
+      { $group: { _id: "$tags", count: { $sum: 1 } } },
+      { $project: { _id: 0, name: "$_id", count: 1 } }
+    ]);
+    res.json({ tags });
+  } catch (err) {
+    const error = new HttpError(
+      "Fetching tags failed, please try again later.",
+      500
+    );
+    return next(error);
+  }
+};
+
+const getContactsByTag = async (req, res, next) => {
+  const tag = req.params.tag;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 3;
+
+  let contacts;
+  try {
+    contacts = await Contact.find({ tags: tag })
+      .skip((page - 1) * limit)
+      .limit(limit);
+  } catch (err) {
+    const error = new HttpError(
+      "Fetching contacts failed, please try again later.",
+      500
+    );
+    return next(error);
+  }
+
+  const totalContacts = await Contact.countDocuments({ tags: tag });
+
+  res.json({
+    contacts: contacts.map(contact => contact.toObject({ getters: true })),
+    currentPage: page,
+    totalPages: Math.ceil(totalContacts / limit)
+  });
+};
 
   
 exports.getContactById = getContactById;
@@ -277,3 +327,5 @@ exports.updateContact = updateContact;
 exports.deleteContact = deleteContact;
 exports.getContactsByUserIdPaginated = getContactsByUserIdPaginated;
 exports.searchContacts = searchContacts;
+exports.getAllTags = getAllTags;
+exports.getContactsByTag = getContactsByTag;
