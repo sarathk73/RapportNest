@@ -1,4 +1,4 @@
-import React,{useState, useContext} from 'react';
+import React, { useState, useContext } from 'react';
 import Card from '../../shared/components/UIElements/Card';
 import Button from '../../shared/components/FormElements/Button';
 import Modal from '../../shared/components/UIElements/Modal';
@@ -12,7 +12,7 @@ const ContactItem = props => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const auth = useContext(AuthContext);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  
+
   const showDeleteWarningHandler = () => {
     setShowConfirmModal(true);
   };
@@ -64,12 +64,19 @@ const ContactItem = props => {
         <Card className="contact-item__content">
           {isLoading && <LoadingSpinner asOverlay />}
           <div className="contact-item__image">
-          <img src={`http://localhost:5000/${props.image}`} alt={props.title} />
+            <img src={`http://localhost:5000/${props.image}`} alt={props.title} />
           </div>
           <div className="contact-item__info">
             <h2>{props.title}</h2>
             <h3>{props.phone}</h3>
             <p>{props.description}</p>
+            {props.tags && props.tags.length > 0 && (
+              <div className="contact-item__tags">
+                {props.tags.map(tag => (
+                  <span key={tag} className="contact-item__tag">{tag}</span>
+                ))}
+              </div>
+            )}
           </div>
           {!props.isSearchResult && (
             <div className="contact-item__actions">

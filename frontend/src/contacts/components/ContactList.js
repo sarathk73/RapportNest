@@ -28,6 +28,7 @@ const ContactList = (props) => {
           description={contact.description}
           phone={contact.phone}
           creatorId={contact.creator}
+          tags={contact.tags}
           onDelete={props.onDeleteContact}
           isSearchResult={props.isSearchResult}
         />
