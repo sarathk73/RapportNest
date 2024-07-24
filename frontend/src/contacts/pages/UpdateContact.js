@@ -6,10 +6,7 @@ import Button from '../../shared/components/FormElements/Button';
 import Card from '../../shared/components/UIElements/Card';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
-import {
-  VALIDATOR_REQUIRE,
-  VALIDATOR_MINLENGTH
-} from '../../shared/util/validators';
+import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH } from '../../shared/util/validators';
 import { useForm } from '../../shared/hooks/form-hook';
 import { useHttpClient } from '../../shared/hooks/http-hook';
 import { AuthContext } from '../../shared/context/auth-context';
@@ -35,6 +32,10 @@ const UpdateContact = () => {
       phone: {
         value: '',
         isValid: false
+      },
+      tags: {
+        value: '',
+        isValid: true
       }
     },
     false
@@ -60,6 +61,10 @@ const UpdateContact = () => {
             phone: {
               value: responseData.contact.phone,
               isValid: true
+            },
+            tags: {
+              value: responseData.contact.tags.join(', '), // Join tags into a comma-separated string
+              isValid: true
             }
           },
           true
@@ -79,7 +84,8 @@ const UpdateContact = () => {
         JSON.stringify({
           title: formState.inputs.title.value,
           description: formState.inputs.description.value,
-          phone: formState.inputs.phone.value
+          phone: formState.inputs.phone.value,
+          tags: JSON.stringify(formState.inputs.tags.value.split(',').map(tag => tag.trim())) 
         }),
         {
           'Content-Type': 'application/json',
@@ -145,6 +151,18 @@ const UpdateContact = () => {
             errorText="Please enter a valid Phone Number."
             onInput={inputHandler}
             initialValue={loadedContact.phone}
+            initialValid={true}
+            className="auth-input"
+          />
+          <Input
+            id="tags"
+            element="input"
+            type="text"
+            label="Tags (comma separated)"
+            validators={[]}
+            errorText=""
+            onInput={inputHandler}
+            initialValue={loadedContact.tags.join(', ')}
             initialValid={true}
             className="auth-input"
           />
