@@ -20,21 +20,21 @@ body {
   max-width: 500px;
   width: 100%;
   box-sizing: border-box;
-  display: flex; /* Added */
-  flex-direction: column; /* Added */
-  align-items: center; /* Added */
-  justify-content: center; /* Added */
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: center; 
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 30px;
 }
 
 .auth-login-mode {
-  margin-top: 0; /* Center the login form */
+  margin-top: 0; 
 }
 
 .auth-signup-mode {
-  margin-top: 30px; /* Adjust this value to position the signup form correctly */
+  margin-top: 30px; 
 }
 
 .phone-container {
@@ -179,11 +179,11 @@ body {
 
 .auth-buttons .auth-button {
   width: 48%;
-  margin-bottom: 10px; /* Add space between buttons */
+  margin-bottom: 10px; 
 }
 
 .auth-buttons .auth-button:last-child {
-  margin-bottom: 0; /* Ensure last button doesn't have bottom margin */
+  margin-bottom: 0; 
 }
 
 .auth-authentication {
@@ -197,7 +197,25 @@ body {
   cursor: pointer;
 }
 
-/* Media Queries for Responsiveness */
+.tagsinput {
+  border: 1px solid #ccc;
+  padding: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  background: #fff;
+  border-radius: 4px;
+}
+
+.tagsinput-tag {
+  background: #ffa580;
+  border: 1px solid #ccc;
+  padding: 5px;
+  border-radius: 4px;
+  margin: 5px;
+  display: inline-block;
+}
+
+
 @media (max-width: 1024px) {
   .auth-container {
     max-width: 90%;
@@ -226,8 +244,8 @@ body {
   }
 
   .auth-buttons .auth-button {
-    width: 100%; /* Full width buttons in smaller screens */
-    margin-bottom: 10px; /* Add space between buttons */
+    width: 100%; 
+    margin-bottom: 10px; 
   }
 }
 
@@ -244,26 +262,26 @@ body {
 
   .auth-buttons {
     flex-direction: column;
-    flex-direction: column; /* Stack buttons vertically */
-    gap: 10px; /* Add space between buttons */
+    flex-direction: column; 
+    gap: 10px; 
     margin-top: 1rem;
   }
 
   .auth-buttons .auth-button {
     width: 100%;
-    margin-bottom: 10px; /* Add space between buttons */
+    margin-bottom: 10px; 
   }
 
   .auth-buttons .auth-button:last-child {
-    margin-bottom: 0; /* Ensure last button doesn't have bottom margin */
+    margin-bottom: 0; 
   }
 
   .phone-container {
-    display: block; /* Remove flex layout on smaller devices */
-    align-items: flex-start; /* Optional: Align items to the start */
+    display: block; 
+    align-items: flex-start; 
   }
 
   .country-selector, .auth-input {
-    margin-bottom: 0.5rem; /* Optional: Add spacing between elements */
+    margin-bottom: 0.5rem; 
   }
 }
