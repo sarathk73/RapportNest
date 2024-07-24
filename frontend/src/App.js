@@ -11,6 +11,7 @@ import NewContact from './contacts/pages/NewContact';
 import UserContacts from './contacts/pages/UserContact';
 import UpdateContact from './contacts/pages/UpdateContact';
 import SearchContacts from './contacts/pages/SearchContacts';
+import FilteredContacts from './contacts/pages/TagFilter'; 
 import Auth from './user/pages/Auth';
 import MainNavigation from './shared/components/Navigation/MainNavigation';
 import { AuthContext } from './shared/context/auth-context';
@@ -29,6 +30,9 @@ const App = () => {
         </Route>
         <Route path="/contacts/search" exact>
           <SearchContacts />
+        </Route>
+        <Route path="/contacts/filter" exact>
+          <FilteredContacts /> 
         </Route>
         <Route path="/:userId/contacts" exact>
           <UserContacts />
