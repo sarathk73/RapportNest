@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import {
   BrowserRouter as Router,
   Route,
@@ -6,16 +6,19 @@ import {
   Switch
 } from 'react-router-dom';
 
-import Users from './user/pages/Users';
-import NewContact from './contacts/pages/NewContact';
-import UserContacts from './contacts/pages/UserContact';
-import UpdateContact from './contacts/pages/UpdateContact';
-import SearchContacts from './contacts/pages/SearchContacts';
-import FilteredContacts from './contacts/pages/TagFilter'; 
-import Auth from './user/pages/Auth';
-import MainNavigation from './shared/components/Navigation/MainNavigation';
 import { AuthContext } from './shared/context/auth-context';
 import { useAuth } from './shared/hooks/auth-hook';
+import MainNavigation from './shared/components/Navigation/MainNavigation';
+import LoadingSpinner from './shared/components/UIElements/LoadingSpinner';
+
+// Lazily load components
+const Users = lazy(() => import('./user/pages/Users'));
+const NewContact = lazy(() => import('./contacts/pages/NewContact'));
+const UserContacts = lazy(() => import('./contacts/pages/UserContact'));
+const UpdateContact = lazy(() => import('./contacts/pages/UpdateContact'));
+const SearchContacts = lazy(() => import('./contacts/pages/SearchContacts'));
+const FilteredContacts = lazy(() => import('./contacts/pages/TagFilter'));
+const Auth = lazy(() => import('./user/pages/Auth'));
 
 const App = () => {
   const { token, login, logout, userId } = useAuth();
@@ -32,7 +35,7 @@ const App = () => {
           <SearchContacts />
         </Route>
         <Route path="/contacts/filter" exact>
-          <FilteredContacts /> 
+          <FilteredContacts />
         </Route>
         <Route path="/:userId/contacts" exact>
           <UserContacts />
@@ -64,15 +67,25 @@ const App = () => {
     <AuthContext.Provider
       value={{
         isLoggedIn: !!token,
-        token: token,
-        userId: userId,
-        login: login,
-        logout: logout
+        token,
+        userId,
+        login,
+        logout
       }}
     >
       <Router>
         <MainNavigation />
-        <main>{routes}</main>
+        <main>
+          <Suspense
+            fallback={
+              <div className="center">
+                <LoadingSpinner />
+              </div>
+            }
+          >
+            {routes}
+          </Suspense>
+        </main>
       </Router>
     </AuthContext.Provider>
   );
