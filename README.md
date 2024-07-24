@@ -13,38 +13,33 @@ Rapport Nest is a contact management system designed for small organizations. Us
 - **File Uploads**: Supports image uploads for contacts.
 - **Pagination**: Contacts and search results are paginated for better performance and user experience.
 
-## Project Structure
-
-```
-rapport-nest/
-├── backend/
-│   ├── controllers/
-│   │   ├── contacts-controllers.js
-│   │   ├── users-controllers.js
-│   ├── middleware/
-│   │   ├── rateLimit.js
-│   │   ├── check-auth.js
-│   │   ├── file-upload.js
-│   │   ├── parse-phone-numbers.js
-│   ├── models/
-│   │   ├── contact.js
-│   │   ├── http-error.js
-│   │   ├── user.js
-│   ├── routes/
-│   │   ├── contacts-routes.js
-│   │   ├── users-routes.js
-│   ├── app.js
-│   ├── .env
-```
-
 
 ### Environment Variables
 
-Create a `.env` file in the root of your backend directory and add the following:
+#### Backend
+
+The backend uses `nodemon.json` for environment variables. Create a `nodemon.json` file in the `backend` directory with the following format:
+
+```json
+{
+    "env": {
+        "DB_USER": "your_db_user",
+        "DB_PASSWORD": "your_db_password",
+        "DB_NAME": "your_db_name",
+        "JWT_KEY": "your_jwt_secret_key"
+    }
+}
+```
+
+*Note: Replace the placeholders with your actual environment values. Do not expose sensitive information publicly.*
+
+#### Frontend
+
+Create a `.env` file in the `frontend` directory with the following environment variables:
 
 ```
-MONGO_URI=your_mongo_db_connection_string
-JWT_KEY=your_jwt_secret_key
+REACT_APP_BACKEND_URL=http://localhost:5000/api
+REACT_APP_ASSET_URL=http://localhost:5000
 ```
 
 ### Setup
@@ -64,7 +59,7 @@ JWT_KEY=your_jwt_secret_key
    ```
 
 3. **Environment Setup**
-   - Ensure MongoDB is running and replace `MONGO_URI` in `.env` with your MongoDB connection string.
+   - Ensure MongoDB is running and configure `nodemon.json` with your MongoDB connection details.
 
 ## Running the Application
 
@@ -87,15 +82,19 @@ JWT_KEY=your_jwt_secret_key
 - **GET /api/users** - Fetch all users.
 - **POST /api/users/signup** - Sign up a new user.
 - **POST /api/users/login** - Log in a user.
+- **POST /api/users/email-verify-login** - OTP-based email verification for login.
 
 ### Contacts
 
 - **GET /api/contacts/:pid** - Get contact by ID.
 - **GET /api/contacts/user/:uid** - Get contacts by user ID.
+- **GET /api/contacts/user/:uid/paginated** - Get paginated contacts by user ID.
 - **POST /api/contacts** - Create a new contact.
 - **PATCH /api/contacts/:pid** - Update a contact.
 - **DELETE /api/contacts/:pid** - Delete a contact.
 - **GET /api/contacts/search** - Search contacts by name.
+- **GET /api/contacts/tags** - Get all tags.
+- **GET /api/contacts/tag/:tag** - Get contacts by tag.
 
 ## Security Features
 
@@ -103,11 +102,4 @@ JWT_KEY=your_jwt_secret_key
 - **JWT Authentication**: Secure authentication using JSON Web Tokens.
 - **File Upload Security**: Limits file size and validates MIME types for uploaded files.
 
-
-## License
-
-This project is licensed under the MIT License.
-
 ---
-
-Feel free to contact us for any questions or support regarding this project.
