@@ -20,11 +20,15 @@ import './Auth.css';
 const Auth = () => {
   const auth = useContext(AuthContext);
   const [isLoginMode, setIsLoginMode] = useState(true);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [isEmailVerificationButtonVisible, setIsEmailVerificationButtonVisible] = useState(true);
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [selectedCountry, setSelectedCountry] = useState('');
   const [phoneVerified, setPhoneVerified] = useState(false);
+  const [emailVerified, setEmailVerified] = useState(false);
   const [verificationMessage, setVerificationMessage] = useState('');
   const [verifiedPhoneNumber, setVerifiedPhoneNumber] = useState('');
+  const [isEmailVerificationLogin, setIsEmailVerificationLogin] = useState(false);
 
   const [formState, inputHandler, setFormData] = useForm(
     {
@@ -79,12 +83,12 @@ const Auth = () => {
     event.preventDefault();
     clearError();
     setIsLoginMode(prevMode => !prevMode);
+    setShowForgotPassword(false);
+    setIsEmailVerificationButtonVisible(true);
   };
 
   const authSubmitHandler = async event => {
     event.preventDefault();
-
-    console.log("Form State Inputs: ", formState.inputs);
 
     if (!isLoginMode && formState.inputs.password.value !== formState.inputs.confirmPassword?.value) {
       console.log("Password Mismatch");
@@ -145,6 +149,62 @@ const Auth = () => {
     setVerifiedPhoneNumber(verifiedPhone);
     setVerificationMessage('Phone number verified successfully.');
   }, []);
+
+  const handleEmailVerification = useCallback(async (userObj) => {
+    setEmailVerified(true);
+    setVerificationMessage('Email verification successful. Please check your email for the verification link.');
+    setIsEmailVerificationButtonVisible(false);
+    setIsEmailVerificationLogin(true);
+  
+    const user_json_url = userObj.user_json_url;
+    try {
+      const response = await fetch(user_json_url);
+      const data = await response.json();
+      console.log('Email Verification Data:', data); 
+  
+      // Access the correct field name
+      if (data.user_email_id) {
+        const email = data.user_email_id;
+        const responseData = await sendRequest(
+          'http://localhost:5000/api/users/email-verify-login',
+          'POST',
+          JSON.stringify({ email }),
+          {
+            'Content-Type': 'application/json'
+          }
+        );
+        auth.login(responseData.userId, responseData.token);
+      } else {
+        throw new Error('Email not found in verification data');
+      }
+    } catch (err) {
+      console.error('Email Verification Login Error:', err.message);
+      setVerificationMessage(err.message || 'An error occurred during email verification login.');
+    }
+  }, [sendRequest, auth]);
+  
+  
+  const forgotPasswordHandler = () => {
+    setShowForgotPassword(true);
+  };
+
+  useEffect(() => {
+    if (showForgotPassword) {
+      const script = document.createElement('script');
+      script.src = 'https://www.phone.email/verify_email_v1.js';
+      script.async = true;
+      document.body.appendChild(script);
+
+      window.phoneEmailReceiver = (userObj) => {
+        handleEmailVerification(userObj);
+      };
+
+      return () => {
+        document.body.removeChild(script);
+        delete window.phoneEmailReceiver;
+      };
+    }
+  }, [showForgotPassword, handleEmailVerification]);
 
   return (
     <React.Fragment>
@@ -242,7 +302,6 @@ const Auth = () => {
                 id="image"
                 onInput={inputHandler}
                 errorText="Please provide an image."
-                className="auth-input"
               />
             </>
           )}
@@ -266,6 +325,11 @@ const Auth = () => {
             onInput={inputHandler}
             className="auth-input"
           />
+          {isLoginMode && (
+            <div className="forgot-password">
+              <a href="#" onClick={forgotPasswordHandler}>Forgot Password?</a>
+            </div>
+          )}
           {!isLoginMode && (
             <Input
               element="input"
@@ -278,8 +342,17 @@ const Auth = () => {
               className="auth-input"
             />
           )}
+          {showForgotPassword && isEmailVerificationButtonVisible && (
+            <div className="auth-button-container">
+              <div className="pe_verify_email" data-client-id="14724806876563276160"></div>
+            </div>
+          )}
           <div className="auth-buttons">
-            <Button type="submit" disabled={!formState.isValid || (!isLoginMode && !phoneVerified)} className="auth-button">
+            <Button
+              type="submit"
+              disabled={!formState.isValid || (!isLoginMode && !phoneVerified) || (isLoginMode && showForgotPassword && !emailVerified && !isEmailVerificationLogin)}
+              className="auth-button"
+            >
               {isLoginMode ? 'LOGIN' : 'SIGNUP'}
             </Button>
             <Button inverse onClick={switchModeHandler} type="button" className="auth-button">
