@@ -3,11 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "bourbon": "^7.3.0",
+    "compass-mixins": "^0.12.12",
+    "dotenv": "^16.4.5",
+    "node-sass": "^7.0.3",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
+    "react-icons": "^5.2.1",
+    "react-international-phone": "^4.3.0",
+    "react-phone-input-2": "^2.15.1",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^5.0.1",
-    "react-transition-group": "^4.4.5"
+    "react-tagsinput": "^3.20.3",
+    "react-transition-group": "^4.4.5",
+    "reactstrap": "^9.2.2",
+    "sass": "^1.77.6"
   },
   "scripts": {
     "start": "react-scripts start",
