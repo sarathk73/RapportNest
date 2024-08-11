@@ -14,12 +14,11 @@ node_modules/
 
 
    
-# Environment variables
-.env
+#.env
 
 # misc
 .DS_Store
-.env.local
+#.env.local
 .env.development.local
 .env.test.local
 .env.production.local
