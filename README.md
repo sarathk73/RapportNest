@@ -72,12 +72,14 @@ REACT_APP_ASSET_URL=http://localhost:5000
 - Start the backend server:
   ```bash
   cd backend
+  nvm use 16
   npm start
   ```
 
 - Start the frontend server:
   ```bash
   cd frontend
+  nvm use 16
   npm start
   ```
 
