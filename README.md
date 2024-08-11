@@ -44,6 +44,12 @@ REACT_APP_ASSET_URL=http://localhost:5000
 
 ### Setup
 
+**Node.js Version**
+    -Ensure you are using Node.js version 16. You can use nvm to switch to the correct version:
+    ```bash
+    nvm use 16
+     ``` 
+
 1. **Backend Setup**
    ```bash
    cd backend
