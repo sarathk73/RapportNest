@@ -16,6 +16,8 @@ body {
   margin: 0;
   background: #eaeef6; 
   font-family: 'Fjalla One', sans-serif; 
+  justify-content: flex-start !important; 
+  padding-top: 70px !important;
 }
 
 
