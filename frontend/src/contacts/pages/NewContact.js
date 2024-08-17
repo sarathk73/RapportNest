@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Input from '../../shared/components/FormElements/Input';
 import Button from '../../shared/components/FormElements/Button';
-import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH } from '../../shared/util/validators';
+import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH, VALIDATOR_STRING} from '../../shared/util/validators';
 import { useForm } from '../../shared/hooks/form-hook';
 import { AuthContext } from '../../shared/context/auth-context';
 import { useHttpClient } from '../../shared/hooks/http-hook';
@@ -67,8 +67,8 @@ const NewContact = () => {
       formData.append('description', formState.inputs.description.value);
       formData.append('phone', phoneNumberWithCode);
       formData.append('image', formState.inputs.image.value);
-      formData.append('tags', JSON.stringify(formState.inputs.tags.value)); // Add tags to the form data
-      await sendRequest('http://localhost:5000/api/contacts', 'POST', formData, {
+      formData.append('tags', JSON.stringify(formState.inputs.tags.value));
+      await sendRequest(process.env.REACT_APP_BACKEND_URL + '/contacts', 'POST', formData, {
         Authorization: 'Bearer ' + auth.token
       });
       history.push('/');
@@ -87,7 +87,7 @@ const NewContact = () => {
             element="input"
             type="text"
             label="Full Name"
-            validators={[VALIDATOR_REQUIRE()]}
+            validators={[VALIDATOR_REQUIRE(),VALIDATOR_STRING()]}
             errorText="Please enter a valid name."
             onInput={inputHandler}
             className="auth-input"
@@ -119,6 +119,7 @@ const NewContact = () => {
             </div>
           </div>
           <ImageUpload
+            center
             id="image"
             onInput={inputHandler}
             errorText="Please provide an image."
