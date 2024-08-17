@@ -8,7 +8,8 @@ import {
   VALIDATOR_EMAIL,
   VALIDATOR_MINLENGTH,
   VALIDATOR_REQUIRE,
-  VALIDATOR_MATCH
+  VALIDATOR_MATCH,
+  VALIDATOR_STRING
 } from '../../shared/util/validators';
 import { useForm } from '../../shared/hooks/form-hook';
 import { useHttpClient } from '../../shared/hooks/http-hook';
@@ -225,7 +226,7 @@ const Auth = () => {
                 id="firstName"
                 type="text"
                 placeholder="First Name"
-                validators={[VALIDATOR_REQUIRE()]}
+                validators={[VALIDATOR_REQUIRE(),VALIDATOR_STRING()]}
                 errorText="Please enter your first name."
                 onInput={inputHandler}
                 className="auth-input"
@@ -235,7 +236,7 @@ const Auth = () => {
                 id="lastName"
                 type="text"
                 placeholder="Last Name"
-                validators={[VALIDATOR_REQUIRE()]}
+                validators={[VALIDATOR_REQUIRE(),VALIDATOR_STRING()]}
                 errorText="Please enter your last name."
                 onInput={inputHandler}
                 className="auth-input"
