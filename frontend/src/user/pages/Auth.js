@@ -9,7 +9,8 @@ import {
   VALIDATOR_MINLENGTH,
   VALIDATOR_REQUIRE,
   VALIDATOR_MATCH,
-  VALIDATOR_STRING
+  VALIDATOR_STRING,
+  VALIDATOR_AGE
 } from '../../shared/util/validators';
 import { useForm } from '../../shared/hooks/form-hook';
 import { useHttpClient } from '../../shared/hooks/http-hook';
@@ -246,7 +247,7 @@ const Auth = () => {
                 id="dateOfBirth"
                 label="Date Of Birth"
                 type="date"
-                validators={[VALIDATOR_REQUIRE()]}
+                validators={[VALIDATOR_REQUIRE(),VALIDATOR_AGE(18, 100)]}
                 errorText="Please enter a valid date of birth."
                 onInput={inputHandler}
                 className="auth-input"

@@ -45,7 +45,12 @@ const UpdateContact = () => {
     const fetchContact = async () => {
       try {
         const responseData = await sendRequest(
-          `${process.env.REACT_APP_BACKEND_URL}/contacts/${contactId}`
+          `${process.env.REACT_APP_BACKEND_URL}/contacts/${contactId}`,
+          'GET',
+          null,
+          {
+            Authorization: 'Bearer ' + auth.token
+          }
         );
         setLoadedContact(responseData.contact);
         setFormData(
@@ -73,7 +78,7 @@ const UpdateContact = () => {
       } catch (err) {}
     };
     fetchContact();
-  }, [sendRequest, contactId, setFormData]);
+  }, [sendRequest, contactId, setFormData,auth.token]);
 
   const contactUpdateSubmitHandler = async event => {
     event.preventDefault();

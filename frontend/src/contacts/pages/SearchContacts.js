@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect ,useContext} from 'react';
+
 import { useHttpClient } from '../../shared/hooks/http-hook';
 import ContactList from '../components/ContactList';
 import Pagination from '../../shared/components/UIElements/Pagination';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 import styles from './SearchContacts.module.css';
+import { AuthContext } from '../../shared/context/auth-context';
 
 const SearchContacts = () => {
+  const auth = useContext(AuthContext);
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [loadedContacts, setLoadedContacts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -25,7 +28,12 @@ const SearchContacts = () => {
     setSearchError(null);
     try {
       const responseData = await sendRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/contacts/search?name=${searchTerm}&page=${currentPage}`
+        `${process.env.REACT_APP_BACKEND_URL}/contacts/search?name=${searchTerm}&page=${currentPage}`,
+        'GET',
+        null,
+        {
+          Authorization: 'Bearer ' + auth.token,  
+        }
       );
       setLoadedContacts(responseData.contacts);
       setTotalPages(responseData.totalPages);
@@ -41,7 +49,7 @@ const SearchContacts = () => {
     if (searchInitiated) {
       searchHandler({ preventDefault: () => {} });
     }
-  }, [currentPage]);
+  }, [currentPage,auth.token]);
 
   return (
     <>

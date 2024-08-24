@@ -1,5 +1,8 @@
 import React, { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import TagsInput from 'react-tagsinput';
+import 'react-tagsinput/react-tagsinput.css';
+
 import Input from '../../shared/components/FormElements/Input';
 import Button from '../../shared/components/FormElements/Button';
 import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH, VALIDATOR_STRING} from '../../shared/util/validators';
@@ -10,8 +13,7 @@ import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 import ImageUpload from '../../shared/components/FormElements/ImageUpload';
 import CountrySelector from '../../shared/components/FormElements/CountrySelector';
-import TagsInput from 'react-tagsinput';
-import 'react-tagsinput/react-tagsinput.css';
+
 
 const NewContact = () => {
   const auth = useContext(AuthContext);
@@ -129,7 +131,7 @@ const NewContact = () => {
             <label htmlFor="tags">Tags</label>
             <TagsInput value={tags} onChange={handleTagsChange} />
           </div>
-          <div className="auth-buttons">
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
             <Button type="submit" disabled={!formState.isValid} className="auth-button">
               ADD CONTACT
             </Button>

@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext} from 'react';
 import { useParams } from 'react-router-dom';
+
 import ContactList from '../components/ContactList';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 import Pagination from '../../shared/components/UIElements/Pagination';
 import { useHttpClient } from '../../shared/hooks/http-hook';
+import { AuthContext } from '../../shared/context/auth-context';
 
 const UserContacts = () => {
+  const auth = useContext(AuthContext);
   const [loadedContacts, setLoadedContacts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -17,14 +20,19 @@ const UserContacts = () => {
     const fetchContacts = async () => {
       try {
         const responseData = await sendRequest(
-          `${process.env.REACT_APP_BACKEND_URL}/contacts/user/${userId}/paginated?page=${currentPage}`
+          `${process.env.REACT_APP_BACKEND_URL}/contacts/user/${userId}/paginated?page=${currentPage}`,
+          'GET',
+          null,
+          {
+            Authorization: 'Bearer ' + auth.token  
+          }
         );
         setLoadedContacts(responseData.contacts);
         setTotalPages(responseData.totalPages);
       } catch (err) {}
     };
     fetchContacts();
-  }, [sendRequest, userId, currentPage]);
+  }, [sendRequest, userId, currentPage, auth.token]);
 
   const contactDeletedHandler = deletedContactId => {
     setLoadedContacts(prevContacts =>

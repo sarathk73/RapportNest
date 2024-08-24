@@ -1,12 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect ,useContext } from 'react';
+
 import { useHttpClient } from '../../shared/hooks/http-hook';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 import styles from './TagFilter.module.css';
 import ContactList from '../components/ContactList';
 import Pagination from '../../shared/components/UIElements/Pagination';
+import { AuthContext } from '../../shared/context/auth-context';
+
 
 const TagFilter = () => {
+  const auth = useContext(AuthContext);
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [tags, setTags] = useState([]);
   const [selectedTag, setSelectedTag] = useState(null);
@@ -17,19 +21,31 @@ const TagFilter = () => {
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const responseData = await sendRequest(`${process.env.REACT_APP_BACKEND_URL}/contacts/tags`);
+        const responseData = await sendRequest(
+          `${process.env.REACT_APP_BACKEND_URL}/contacts/tags`,
+          'GET',
+          null,
+          {
+            Authorization: 'Bearer ' + auth.token,  
+          }
+        );
         setTags(responseData.tags);
       } catch (err) {}
     };
     fetchTags();
-  }, [sendRequest]);
+  }, [sendRequest, auth.token]);
 
   useEffect(() => {
     const fetchContactsByTag = async () => {
       if (selectedTag) {
         try {
           const responseData = await sendRequest(
-            `${process.env.REACT_APP_BACKEND_URL}/contacts/tag/${selectedTag}?page=${currentPage}`
+            `${process.env.REACT_APP_BACKEND_URL}/contacts/tag/${selectedTag}?page=${currentPage}`,
+            'GET',
+            null,
+            {
+              Authorization: 'Bearer ' + auth.token,  
+            }
           );
           setLoadedContacts(responseData.contacts);
           setTotalPages(responseData.totalPages);
@@ -37,7 +53,7 @@ const TagFilter = () => {
       }
     };
     fetchContactsByTag();
-  }, [sendRequest, selectedTag, currentPage]);
+  }, [sendRequest, selectedTag, currentPage,auth.token]);
 
   const selectTagHandler = (tag) => {
     setSelectedTag(tag);
